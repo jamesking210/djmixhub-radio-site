@@ -2,14 +2,137 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=index.html#terms" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Redirecting…</title>
-  <script>
-    window.location.replace('index.html#terms');
-  </script>
+  <title>Terms &amp; Conditions | DJMixHub.com</title>
+  <meta name="description" content="Terms and conditions for DJMixHub.com and the DJMixHub radio player." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
-  <p>Redirecting to <a href="index.html#terms">Terms & Conditions</a>…</p>
+  <div class="site-shell">
+    <header class="site-header">
+      <div class="container nav-wrap">
+        <a class="brand" href="index.html#home" aria-label="DJMixHub home">
+          <img src="assets/img/logo.jpg" alt="DJMixHub logo" />
+          <div>
+            <span class="brand-title">DJMixHub.com</span>
+            <span class="brand-subtitle">Live internet radio</span>
+          </div>
+        </a>
+        <nav class="site-nav">
+          <a href="index.html#home">Home</a>
+          <a href="index.html#about">About</a>
+          <a href="index.html#djs">DJs</a>
+          <a class="nav-cta" href="https://radio.djmixhub.com/public/djmixhub" target="_blank" rel="noopener">Listen on AzuraCast</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="content-section terms-page-shell">
+      <div class="container">
+        <div class="section-heading narrow">
+          <p class="eyebrow">Terms &amp; Conditions</p>
+          <h1>Website and stream terms</h1>
+          <p class="section-intro">
+            By using DJMixHub.com, the DJMixHub player, or any related contact or submission method,
+            you agree to the terms below.
+          </p>
+        </div>
+
+        <div class="content-grid terms-grid">
+          <article class="glass-card prose-card full-width">
+            <h3>1. Acceptance of terms</h3>
+            <p>
+              By visiting this site, listening to the stream, contacting us, or submitting content,
+              you agree to these Terms &amp; Conditions and any future updates posted on this page.
+            </p>
+          </article>
+
+          <article class="glass-card prose-card">
+            <h3>2. Data we may collect</h3>
+            <p>
+              To operate, protect, and improve the station, we or our hosting and streaming providers may collect or log
+              your IP address, approximate location derived from IP, browser type, device type, operating system,
+              referring URL, pages viewed, timestamps, stream or player interactions, cookies, local storage values,
+              and other technical identifiers reasonably tied to your visit.
+            </p>
+            <p>
+              This data may be used for security, abuse prevention, diagnostics, analytics, uptime monitoring,
+              audience measurement, moderation, and general station operations.
+            </p>
+          </article>
+
+          <article class="glass-card prose-card">
+            <h3>3. Streaming and site use</h3>
+            <p>
+              You agree not to abuse, attack, scrape, overload, reverse engineer, disrupt, or interfere with the website,
+              the stream, AzuraCast services, or any related infrastructure.
+            </p>
+            <p>
+              Access may be limited, blocked, or terminated at any time for misuse, suspected abuse, or operational reasons.
+            </p>
+          </article>
+
+          <article class="glass-card prose-card">
+            <h3>4. Submitted mixes and media</h3>
+            <p>
+              If you submit a mix, image, logo, bio, or other material to DJMixHub, you represent that you have the right to share it.
+              You grant DJMixHub a non-exclusive permission to review, host, stream, promote, display, and archive submitted materials
+              in connection with the station unless otherwise agreed in writing.
+            </p>
+          </article>
+
+          <article class="glass-card prose-card">
+            <h3>5. Intellectual property</h3>
+            <p>
+              DJMixHub branding, design, and site content remain the property of their respective owners.
+              Music, mixes, names, logos, and artwork remain the property of their respective creators or rights holders unless stated otherwise.
+            </p>
+          </article>
+
+          <article class="glass-card prose-card">
+            <h3>6. No warranties</h3>
+            <p>
+              The site and stream are provided on an as-is and as-available basis. We do not guarantee uninterrupted service,
+              continuous availability, error-free playback, or that all content will remain online forever.
+            </p>
+          </article>
+
+          <article class="glass-card prose-card">
+            <h3>7. Limitation of liability</h3>
+            <p>
+              DJMixHub will not be liable for losses, damages, interruptions, data issues, or other claims arising from use of the site,
+              the stream, or related services, to the fullest extent allowed by law.
+            </p>
+          </article>
+
+          <article class="glass-card prose-card full-width">
+            <h3>8. Contact</h3>
+            <p>
+              For submissions, questions, or policy concerns, contact
+              <a class="text-link" href="mailto:jimbo@djmixhub.com">jimbo@djmixhub.com</a>.
+            </p>
+          </article>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-wrap">
+        <p>© <span id="year"></span> DJMixHub.com</p>
+        <div class="footer-links">
+          <a href="index.html#home">Back to station</a>
+          <a href="mailto:jimbo@djmixhub.com">jimbo@djmixhub.com</a>
+          <a href="https://radio.djmixhub.com/public/djmixhub" target="_blank" rel="noopener">Open full player</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>

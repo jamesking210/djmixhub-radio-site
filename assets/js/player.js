@@ -5,69 +5,45 @@ const STATION = {
   liveApiUrl: 'https://radio.djmixhub.com/api/nowplaying/djmixhub',
   staticApiUrl: 'https://radio.djmixhub.com/api/nowplaying_static/djmixhub.json',
   fallbackStreamUrl: 'https://radio.djmixhub.com/listen/djmixhub/radio.mp3',
-  fallbackArtwork: 'assets/img/logo.jpg',
-  baseUrl: 'https://radio.djmixhub.com'
+  fallbackArtUrl: 'assets/img/logo.jpg'
 };
-
-const ROUTES = {
-  home: { title: 'DJMixHub.com | Live internet radio' },
-  about: { title: 'About | DJMixHub.com' },
-  djs: { title: 'DJ Bios | DJMixHub.com' },
-  terms: { title: 'Terms & Conditions | DJMixHub.com' }
-};
-
-const TERMS_KEY = 'djmixhub-terms-accepted';
-const VOLUME_KEY = 'djmixhub-volume';
 
 const audio = document.getElementById('station-audio');
 const playToggle = document.getElementById('play-toggle');
 const volumeRange = document.getElementById('volume-range');
 const yearEl = document.getElementById('year');
 const termsConsent = document.getElementById('terms-consent');
-const sections = Array.from(document.querySelectorAll('[data-route-section]'));
+const TERMS_KEY = 'djmixhub-terms-accepted';
+const VOLUME_KEY = 'djmixhub-volume';
 
 let isPlaying = false;
 let currentStreamUrl = STATION.fallbackStreamUrl;
-let currentArtworkUrl = STATION.fallbackArtwork;
-let lastPayload = null;
+
+const getPlayButtons = () => Array.from(document.querySelectorAll('.js-play-toggle'));
+const getNavLinks = () => Array.from(document.querySelectorAll('[data-nav-link]'));
+const getSections = () => Array.from(document.querySelectorAll('[data-section]'));
 
 const setText = (selector, value) => {
-  const element = typeof selector === 'string' ? document.querySelector(selector) : selector;
+  const element = document.querySelector(selector);
   if (element) element.textContent = value;
+};
+
+const setImage = (selector, src, alt = 'Current album art') => {
+  const element = document.querySelector(selector);
+  if (!element) return;
+  element.src = src || STATION.fallbackArtUrl;
+  element.alt = alt;
 };
 
 const syncYear = () => {
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 };
 
-const getRouteFromHash = () => {
-  const hash = window.location.hash.replace('#', '').trim().toLowerCase();
-  if (hash && ROUTES[hash]) return hash;
-  return 'home';
-};
-
-const setRoute = (route) => {
-  const activeRoute = ROUTES[route] ? route : 'home';
-
-  sections.forEach((section) => {
-    section.classList.toggle('active', section.dataset.routeSection === activeRoute);
+const updateActiveNav = (sectionId) => {
+  getNavLinks().forEach((link) => {
+    link.classList.toggle('active', link.dataset.navLink === sectionId);
   });
-
-  document.querySelectorAll('[data-route]').forEach((link) => {
-    link.classList.toggle('active', link.dataset.route === activeRoute);
-  });
-
-  document.title = ROUTES[activeRoute].title;
-  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
 };
-
-const showTermsIfNeeded = () => {
-  if (!termsConsent) return;
-  const accepted = localStorage.getItem(TERMS_KEY) === 'yes';
-  termsConsent.hidden = accepted;
-};
-
-const getPlayButtons = () => Array.from(document.querySelectorAll('.js-play-toggle'));
 
 const setPlayButtonState = () => {
   const symbol = isPlaying ? '❚❚' : '▶';
@@ -116,61 +92,17 @@ const renderRecentTracks = (tracks = []) => {
     .join('');
 };
 
-const absolutizeUrl = (value) => {
-  if (!value) return '';
-  try {
-    return new URL(value, STATION.baseUrl).href;
-  } catch (error) {
-    return value;
-  }
-};
-
-const getArtworkFromPayload = (payload) => {
-  const song = payload?.now_playing?.song || {};
-  const station = payload?.station || {};
-  const candidates = [
-    song.art,
-    song.art_url,
-    payload?.now_playing?.song?.art,
-    payload?.now_playing?.song?.art_url,
-    payload?.now_playing?.song?.album_art,
-    payload?.live?.art,
-    station.art,
-    station.art_url,
-    station.logo,
-    STATION.fallbackArtwork
-  ].filter(Boolean);
-
-  const first = candidates.find(Boolean) || STATION.fallbackArtwork;
-  return absolutizeUrl(first);
-};
-
-const setArtwork = (artUrl) => {
-  currentArtworkUrl = artUrl || STATION.fallbackArtwork;
-
-  const playerArt = document.getElementById('player-art');
-  const heroArt = document.getElementById('hero-art');
-
-  [playerArt, heroArt].forEach((img) => {
-    if (img) img.src = currentArtworkUrl;
-  });
-};
-
-const updateMediaSession = (title, artist, artUrl) => {
-  if (!('mediaSession' in navigator)) return;
-
-  try {
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: title || STATION.name,
-      artist: artist || 'DJMixHub',
-      album: STATION.name,
-      artwork: [
-        { src: artUrl || STATION.fallbackArtwork, sizes: '512x512', type: 'image/jpeg' }
-      ]
-    });
-  } catch (error) {
-    // Ignore unsupported metadata formats.
-  }
+const extractArtwork = (payload) => {
+  const nowPlaying = payload?.now_playing || {};
+  const song = nowPlaying.song || {};
+  return (
+    song.art ||
+    song.art_url ||
+    nowPlaying.art ||
+    nowPlaying.art_url ||
+    payload?.live?.art ||
+    STATION.fallbackArtUrl
+  );
 };
 
 const extractStationData = (payload) => {
@@ -179,17 +111,20 @@ const extractStationData = (payload) => {
   const station = payload.station || {};
   const nowPlaying = payload.now_playing || {};
   const song = nowPlaying.song || {};
-  const live = payload.live || nowPlaying.is_live;
-  const title = song.title || song.text || 'Live stream';
+
+  const liveFlag = nowPlaying.is_live ?? payload.is_live ?? false;
+  const title = song.title || song.text || nowPlaying.song?.text || 'Live stream';
   const artist = song.artist || station.name || STATION.name;
+  const streamUrl = station.listen_url || STATION.fallbackStreamUrl;
+  const artUrl = extractArtwork(payload);
 
   return {
     title,
     artist,
-    streamUrl: station.listen_url || payload?.listeners?.stream_url || STATION.fallbackStreamUrl,
-    isLive: live,
-    recent: payload.song_history || [],
-    artUrl: getArtworkFromPayload(payload)
+    streamUrl,
+    artUrl,
+    isLive: liveFlag,
+    recent: payload.song_history || []
   };
 };
 
@@ -197,18 +132,17 @@ const updateFromPayload = (payload) => {
   const data = extractStationData(payload);
   if (!data) return;
 
-  lastPayload = payload;
   currentStreamUrl = data.streamUrl || STATION.fallbackStreamUrl;
 
-  if (audio && audio.src !== currentStreamUrl && !isPlaying) {
+  if (audio && !audio.src) {
     audio.src = currentStreamUrl;
   }
 
   updateTrackText(data.title, data.artist);
   updateStatus(data.isLive ? 'Live now' : 'AutoDJ');
   renderRecentTracks(data.recent);
-  setArtwork(data.artUrl);
-  updateMediaSession(data.title, data.artist, data.artUrl);
+  setImage('#player-art', data.artUrl, `${data.title} album art`);
+  setImage('#hero-art', data.artUrl, `${data.title} album art`);
 };
 
 const fetchJson = async (url) => {
@@ -237,7 +171,8 @@ const refreshStationData = async () => {
       updateTrackText(STATION.name, 'Metadata unavailable');
       updateStatus('Stream ready');
       renderRecentTracks([]);
-      setArtwork(STATION.fallbackArtwork);
+      setImage('#player-art', STATION.fallbackArtUrl, 'DJMixHub logo');
+      setImage('#hero-art', STATION.fallbackArtUrl, 'DJMixHub logo');
     }
   }
 };
@@ -250,7 +185,7 @@ const togglePlayback = async () => {
       audio.pause();
       isPlaying = false;
     } else {
-      if (audio.src !== currentStreamUrl) {
+      if (!audio.src || audio.src !== currentStreamUrl) {
         audio.src = currentStreamUrl;
       }
       await audio.play();
@@ -261,6 +196,37 @@ const togglePlayback = async () => {
   }
 
   setPlayButtonState();
+};
+
+const showTermsIfNeeded = () => {
+  if (!termsConsent) return;
+  const accepted = localStorage.getItem(TERMS_KEY) === 'yes';
+  termsConsent.hidden = accepted;
+};
+
+const observeSections = () => {
+  const sections = getSections();
+  if (!sections.length || !('IntersectionObserver' in window)) {
+    const first = sections[0];
+    if (first) updateActiveNav(first.dataset.section);
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter((entry) => entry.isIntersecting)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+    if (!visible) return;
+
+    const sectionId = visible.target.dataset.section;
+    updateActiveNav(sectionId);
+  }, {
+    rootMargin: '-25% 0px -55% 0px',
+    threshold: [0.15, 0.4, 0.65]
+  });
+
+  sections.forEach((section) => observer.observe(section));
 };
 
 if (audio) {
@@ -288,19 +254,7 @@ document.addEventListener('click', (event) => {
   if (playButton) {
     event.preventDefault();
     togglePlayback();
-    return;
   }
-
-  const routeLink = event.target.closest('[data-route]');
-  if (routeLink) {
-    event.preventDefault();
-    const route = routeLink.dataset.route || 'home';
-    window.location.hash = route;
-  }
-});
-
-window.addEventListener('hashchange', () => {
-  setRoute(getRouteFromHash());
 });
 
 if (playToggle) {
@@ -324,18 +278,9 @@ if (audio) {
   });
 }
 
-if ('mediaSession' in navigator) {
-  navigator.mediaSession.setActionHandler('play', () => {
-    if (!isPlaying) togglePlayback();
-  });
-  navigator.mediaSession.setActionHandler('pause', () => {
-    if (isPlaying) togglePlayback();
-  });
-}
-
 syncYear();
-setRoute(getRouteFromHash());
 showTermsIfNeeded();
 setPlayButtonState();
+observeSections();
 refreshStationData();
 setInterval(refreshStationData, 30000);

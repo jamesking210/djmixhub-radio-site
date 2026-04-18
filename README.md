@@ -1,47 +1,49 @@
-# DJMixHub.com v4
+# DJMixHub.com radio site v5
 
-This v4 package restructures the site into a **single-page front end** so the built-in player can keep playing while visitors move between sections in the same browser tab.
+This is the simplified v5 layout for **djmixhub.com**:
 
-## What changed
+- one streamlined `index.html`
+- in-page sections for `#home`, `#about`, and `#djs`
+- one separate `terms.html`
+- persistent player during normal navigation inside `index.html`
+- live track metadata and album art from AzuraCast when available
+- Docker-ready nginx deployment on port `8085`
 
-- Home, About, DJ Bios, and Terms now live inside one `index.html` shell
-- navigation uses hash routes (`#home`, `#about`, `#djs`, `#terms`)
-- the player is no longer duplicated across separate full HTML pages
-- album art is pulled from AzuraCast when available and falls back to the DJMixHub logo
-- ChuckTheDJCA now explicitly includes **Northern California**
-- `about.html`, `djs.html`, and `terms.html` are redirect wrappers for old links
+## Station settings
 
-## Important note about images
+- Main website domain: `djmixhub.com`
+- AzuraCast host: `radio.djmixhub.com`
+- Station shortcode: `djmixhub`
+- Local Docker port: `8085`
 
-This package is meant to be merged into your **existing GitHub repo**.
-
-It does **not** include the existing binary DJ image files from your repo, so keep your current `assets/img/` folder contents, especially:
-
-- `assets/img/logo.jpg`
-- `assets/img/logo.png`
-- `assets/img/JimboSliceChicago.png`
-- `assets/img/ChuckTheDJCA.png`
-
-## Files included
-
-- `index.html`
-- `about.html`
-- `djs.html`
-- `terms.html`
-- `assets/css/styles.css`
-- `assets/js/player.js`
-- `Dockerfile`
-- `docker-compose.yml`
-- `nginx/default.conf`
-
-## Deploy or update
+## Deploy
 
 ```bash
 cd /opt/djmixhub-radio-site
+docker compose up -d --build
+```
+
+## Update later
+
+```bash
 git pull
 docker compose up -d --build
 ```
 
-## If you are uploading manually to GitHub
+## Important
 
-Unzip this package, copy the included files over the existing repo files, commit, and push.
+Keep your existing image files in `assets/img`, especially:
+
+- `logo.jpg`
+- `logo.png`
+- `JimboSliceChicago.png`
+- `ChuckTheDJCA.png`
+
+## Files no longer needed in this version
+
+You no longer need separate content pages for:
+
+- `about.html`
+- `djs.html`
+
+Everything for those sections now lives inside `index.html`.
