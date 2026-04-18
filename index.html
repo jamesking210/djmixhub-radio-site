@@ -8,35 +8,116 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
   <div class="site-shell">
     <header class="site-header">
       <div class="container nav-wrap">
-        <a class="brand" href="/" data-route aria-label="DJMixHub home">
-          <img src="/assets/img/logo.jpg" alt="DJMixHub logo" />
+        <a class="brand" href="index.html" aria-label="DJMixHub home">
+          <img src="assets/img/logo.jpg" alt="DJMixHub logo" />
           <div>
             <span class="brand-title">DJMixHub.com</span>
             <span class="brand-subtitle">Live internet radio</span>
           </div>
         </a>
         <nav class="site-nav">
-          <a href="/" data-route>Home</a>
-          <a href="/about" data-route>About</a>
-          <a href="/djs" data-route>DJ Bios</a>
+          <a href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="djs.html">DJ Bios</a>
           <a class="nav-cta" href="https://radio.djmixhub.com/public/djmixhub" target="_blank" rel="noopener">Listen on AzuraCast</a>
         </nav>
       </div>
     </header>
 
-    <main id="app-main" aria-live="polite"></main>
+    <main data-page="home">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Now streaming from radio.djmixhub.com</p>
+            <h1>Dark, loud, and always live.</h1>
+            <p class="hero-text">
+              DJMixHub.com is built for club energy, throwbacks, remixes, guest mixes, and nonstop motion.
+              Hit play once and move through the site without killing the vibe.
+            </p>
+            <div class="hero-actions">
+              <button class="primary-btn js-play-toggle" type="button">Play Station</button>
+              <a class="secondary-btn" href="https://radio.djmixhub.com/public/djmixhub" target="_blank" rel="noopener">Open Full Player</a>
+            </div>
+            <div class="hero-stats">
+              <div class="stat-card">
+                <span class="stat-label">Status</span>
+                <strong id="hero-live-status">Checking feed...</strong>
+              </div>
+              <div class="stat-card">
+                <span class="stat-label">Current track</span>
+                <strong id="hero-track">Loading...</strong>
+              </div>
+            </div>
+          </div>
+          <div class="hero-panel glass-card">
+            <div class="hero-panel-header">
+              <span class="pill">Live station</span>
+              <span class="mini-status" id="hero-mini-status">Connecting</span>
+            </div>
+            <img class="hero-logo" src="assets/img/logo.jpg" alt="DJMixHub logo artwork" />
+            <div class="now-playing-card">
+              <span class="np-label">Now playing</span>
+              <h2 id="np-title">Loading track info...</h2>
+              <p id="np-artist">Please wait while we contact AzuraCast.</p>
+            </div>
+            <div class="recent-tracks">
+              <h3>Recent spins</h3>
+              <ul id="recent-tracks-list">
+                <li>Loading recent tracks...</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="feature-section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">What listeners can expect</p>
+            <h2>A station site that feels like the brand.</h2>
+          </div>
+          <div class="feature-grid">
+            <article class="glass-card feature-card">
+              <h3>Persistent player feel</h3>
+              <p>Use the nav without restarting the music. The stream keeps going while visitors move between Home, About, DJ Bios, and Terms.</p>
+            </article>
+            <article class="glass-card feature-card">
+              <h3>Built around your logo</h3>
+              <p>A dark neon look with pink, purple, and blue highlights that match the DJMixHub branding and feel right at home on desktop or mobile.</p>
+            </article>
+            <article class="glass-card feature-card">
+              <h3>Simple to self-host</h3>
+              <p>Static site plus Docker plus Nginx keeps deployment easy on nuc1 and easy to version from GitHub whenever you want to update content.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-band">
+        <div class="container cta-wrap glass-card">
+          <div>
+            <p class="eyebrow">Want more than a playlist?</p>
+            <h2>Meet the DJs, learn the story, and find out how to get your mix featured on DJMixHub.</h2>
+          </div>
+          <div class="cta-buttons">
+            <a class="secondary-btn" href="about.html">About the station</a>
+            <a class="primary-btn" href="djs.html">Meet the DJs</a>
+          </div>
+        </div>
+      </section>
+    </main>
 
     <footer class="site-footer">
       <div class="container footer-wrap">
         <p>© <span id="year"></span> DJMixHub.com</p>
         <div class="footer-links">
-          <a href="/terms" data-route>Terms &amp; Conditions</a>
+          <a href="terms.html">Terms &amp; Conditions</a>
           <a href="mailto:jimbo@djmixhub.com">jimbo@djmixhub.com</a>
           <a href="https://radio.djmixhub.com/public/djmixhub" target="_blank" rel="noopener">Open full player</a>
         </div>
@@ -47,7 +128,7 @@
   <div class="player-dock">
     <div class="player-dock-inner container">
       <div class="player-meta">
-        <img src="/assets/img/logo.jpg" alt="Current album art" class="player-logo" id="dock-art" />
+        <img src="assets/img/logo.jpg" alt="DJMixHub logo small" class="player-logo" />
         <div>
           <span class="player-station">DJMixHub Live</span>
           <strong id="dock-track">Loading stream data...</strong>
@@ -63,22 +144,20 @@
       <audio id="station-audio" preload="none" crossorigin="anonymous"></audio>
     </div>
   </div>
-
   <div class="terms-popup" id="terms-consent" hidden>
     <div class="terms-popup-card glass-card">
       <p class="terms-popup-title">Before you listen</p>
       <p>
-        By using DJMixHub.com and its player, you agree to our <a href="/terms" data-route>Terms &amp; Conditions</a>.
+        By using DJMixHub.com and its player, you agree to our <a href="terms.html">Terms &amp; Conditions</a>.
         We may log IP address, approximate location, browser or device details, timestamps, and player activity for security,
         performance, abuse prevention, and station operations.
       </p>
       <div class="terms-popup-actions">
-        <a class="secondary-btn" href="/terms" data-route>View Terms</a>
+        <a class="secondary-btn" href="terms.html">View Terms</a>
         <button class="primary-btn" type="button" data-accept-terms>I Agree</button>
       </div>
     </div>
   </div>
-
-  <script src="/assets/js/player.js"></script>
+  <script src="assets/js/player.js"></script>
 </body>
 </html>

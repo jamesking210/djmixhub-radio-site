@@ -1,18 +1,10 @@
-
 const STATION = {
   name: 'DJMixHub Live',
+  shortcode: 'djmixhub',
   publicPlayerUrl: 'https://radio.djmixhub.com/public/djmixhub',
   liveApiUrl: 'https://radio.djmixhub.com/api/nowplaying/djmixhub',
   staticApiUrl: 'https://radio.djmixhub.com/api/nowplaying_static/djmixhub.json',
-  fallbackStreamUrl: 'https://radio.djmixhub.com/listen/djmixhub/radio.mp3',
-  fallbackArtUrl: '/assets/img/logo.jpg'
-};
-
-const ROUTES = {
-  '/': { partial: '/partials/home.html', title: 'DJMixHub.com | Live Radio' },
-  '/about': { partial: '/partials/about.html', title: 'About | DJMixHub.com' },
-  '/djs': { partial: '/partials/djs.html', title: 'DJ Bios | DJMixHub.com' },
-  '/terms': { partial: '/partials/terms.html', title: 'Terms & Conditions | DJMixHub.com' }
+  fallbackStreamUrl: 'https://radio.djmixhub.com/listen/djmixhub/radio.mp3'
 };
 
 const audio = document.getElementById('station-audio');
@@ -20,22 +12,19 @@ const playToggle = document.getElementById('play-toggle');
 const volumeRange = document.getElementById('volume-range');
 const yearEl = document.getElementById('year');
 const termsConsent = document.getElementById('terms-consent');
-const appMain = document.getElementById('app-main');
 const TERMS_KEY = 'djmixhub-terms-accepted';
 const VOLUME_KEY = 'djmixhub-volume';
 
 let isPlaying = false;
 let currentStreamUrl = STATION.fallbackStreamUrl;
 let lastPayload = null;
-let refreshTimer = null;
 
 const normalizePath = (value) => {
-  if (!value || value === '/index.html') return '/';
-  if (value.endsWith('.html')) return value.replace(/\.html$/, '') || '/';
-  return value;
+  if (!value) return '/index.html';
+  const path = value.endsWith('/') ? `${value}index.html` : value;
+  return path === '/' ? '/index.html' : path;
 };
 
-const routeForPath = (pathname) => ROUTES[normalizePath(pathname)] || ROUTES['/'];
 const getPlayButtons = () => Array.from(document.querySelectorAll('.js-play-toggle'));
 
 const setText = (selector, value) => {
@@ -43,33 +32,31 @@ const setText = (selector, value) => {
   if (element) element.textContent = value;
 };
 
-const setImage = (selector, src, alt = 'Current album art') => {
-  const element = typeof selector === 'string' ? document.querySelector(selector) : selector;
-  if (!element) return;
-  element.src = src || STATION.fallbackArtUrl;
-  element.alt = alt;
-};
-
 const syncYear = () => {
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 };
 
 const updateActiveNav = (pathname = window.location.pathname) => {
-  document.querySelectorAll('.site-nav a[data-route], .footer-links a[data-route], .brand[data-route]').forEach((link) => {
-    const href = link.getAttribute('href');
-    if (!href) return;
-    const isActive = normalizePath(href) === normalizePath(pathname);
-    link.classList.toggle('active', isActive && link.closest('.site-nav'));
+  document.querySelectorAll('.site-nav a').forEach((link) => {
+    if (link.target === '_blank') {
+      link.classList.remove('active');
+      return;
+    }
+    const url = new URL(link.href, window.location.href);
+    const isActive = normalizePath(url.pathname) === normalizePath(pathname);
+    link.classList.toggle('active', isActive);
   });
 };
 
 const setPlayButtonState = () => {
   const symbol = isPlaying ? '❚❚' : '▶';
   const label = isPlaying ? 'Pause station' : 'Play station';
+
   if (playToggle) {
     playToggle.textContent = symbol;
     playToggle.setAttribute('aria-label', label);
   }
+
   getPlayButtons().forEach((button) => {
     button.textContent = isPlaying ? 'Pause Station' : 'Play Station';
   });
@@ -92,66 +79,68 @@ const updateStatus = (status) => {
 const renderRecentTracks = (tracks = []) => {
   const recentTracksList = document.querySelector('#recent-tracks-list');
   if (!recentTracksList) return;
+
   if (!tracks.length) {
     recentTracksList.innerHTML = '<li>Recent tracks will appear here when available.</li>';
     return;
   }
-  recentTracksList.innerHTML = tracks.slice(0, 5).map((item) => {
-    const song = item.song || {};
-    const text = [song.title, song.artist].filter(Boolean).join(' — ');
-    return `<li>${text || 'Unknown track'}</li>`;
-  }).join('');
-};
 
-const pickArt = (payload) => {
-  const candidates = [
-    payload?.now_playing?.song?.art,
-    payload?.now_playing?.song?.art_url,
-    payload?.now_playing?.song?.album_art,
-    payload?.song?.art,
-    payload?.song?.art_url,
-    payload?.station?.brand_image,
-    STATION.fallbackArtUrl
-  ];
-  return candidates.find(Boolean) || STATION.fallbackArtUrl;
+  recentTracksList.innerHTML = tracks
+    .slice(0, 5)
+    .map((item) => {
+      const song = item.song || {};
+      const text = [song.title, song.artist].filter(Boolean).join(' — ');
+      return `<li>${text || 'Unknown track'}</li>`;
+    })
+    .join('');
 };
 
 const extractStationData = (payload) => {
   if (!payload) return null;
+
   const station = payload.station || {};
   const nowPlaying = payload.now_playing || {};
   const song = nowPlaying.song || {};
   const live = payload.live || nowPlaying.is_live;
   const title = song.title || nowPlaying.song?.text || 'Live stream';
   const artist = song.artist || station.name || STATION.name;
+
   return {
     title,
     artist,
     streamUrl: station.listen_url || STATION.fallbackStreamUrl,
     isLive: live,
-    recent: payload.song_history || [],
-    artUrl: pickArt(payload)
+    recent: payload.song_history || []
   };
 };
 
 const updateFromPayload = (payload) => {
   const data = extractStationData(payload);
   if (!data) return;
+
   lastPayload = payload;
   currentStreamUrl = data.streamUrl || STATION.fallbackStreamUrl;
+
   if (audio && audio.src !== currentStreamUrl && !isPlaying) {
     audio.src = currentStreamUrl;
   }
+
   updateTrackText(data.title, data.artist);
   updateStatus(data.isLive ? 'Live now' : 'AutoDJ');
   renderRecentTracks(data.recent);
-  setImage('#dock-art', data.artUrl, `${data.title} album art`);
-  setImage('#np-art', data.artUrl, `${data.title} album art`);
 };
 
 const fetchJson = async (url) => {
-  const response = await fetch(url, { method: 'GET', mode: 'cors', cache: 'no-store' });
-  if (!response.ok) throw new Error(`Failed to fetch ${url}`);
+  const response = await fetch(url, {
+    method: 'GET',
+    mode: 'cors',
+    cache: 'no-store'
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${url}`);
+  }
+
   return response.json();
 };
 
@@ -167,57 +156,95 @@ const refreshStationData = async () => {
       updateTrackText(STATION.name, 'Metadata unavailable');
       updateStatus('Stream ready');
       renderRecentTracks([]);
-      setImage('#dock-art', STATION.fallbackArtUrl, 'DJMixHub logo');
-      setImage('#np-art', STATION.fallbackArtUrl, 'DJMixHub logo');
     }
   }
 };
 
 const togglePlayback = async () => {
   if (!audio) return;
+
   try {
     if (isPlaying) {
       audio.pause();
       isPlaying = false;
     } else {
-      if (audio.src !== currentStreamUrl) audio.src = currentStreamUrl;
+      if (audio.src !== currentStreamUrl) {
+        audio.src = currentStreamUrl;
+      }
       await audio.play();
       isPlaying = true;
     }
   } catch (error) {
     window.open(STATION.publicPlayerUrl, '_blank', 'noopener');
   }
-  setPlayButtonState();
-};
 
-const renderRoute = async (pathname, { pushState = false } = {}) => {
-  const normalized = normalizePath(pathname);
-  const route = routeForPath(normalized);
-  const response = await fetch(route.partial, { cache: 'no-store' });
-  if (!response.ok) throw new Error(`Failed to load ${route.partial}`);
-  appMain.innerHTML = await response.text();
-  document.title = route.title;
-  if (pushState) history.pushState({}, '', normalized);
-  updateActiveNav(normalized);
-  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-  if (lastPayload) updateFromPayload(lastPayload);
   setPlayButtonState();
-};
-
-const showTermsIfNeeded = () => {
-  if (!termsConsent) return;
-  const accepted = localStorage.getItem(TERMS_KEY) === 'yes';
-  termsConsent.hidden = accepted;
 };
 
 const shouldHandleInternalLink = (link) => {
   if (!link) return false;
   if (link.target && link.target !== '') return false;
   if (link.hasAttribute('download')) return false;
+
   const href = link.getAttribute('href');
   if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return false;
+
   const url = new URL(link.href, window.location.href);
   return url.origin === window.location.origin;
+};
+
+const navigateTo = async (url, { pushState = true } = {}) => {
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+      headers: {
+        'X-Requested-With': 'djmixhub-spa'
+      }
+    });
+
+    if (!response.ok) {
+      window.location.href = url;
+      return;
+    }
+
+    const html = await response.text();
+    const parsed = new DOMParser().parseFromString(html, 'text/html');
+    const nextMain = parsed.querySelector('main');
+
+    if (!nextMain) {
+      window.location.href = url;
+      return;
+    }
+
+    const currentMain = document.querySelector('main');
+    if (currentMain) currentMain.replaceWith(nextMain);
+
+    if (parsed.title) {
+      document.title = parsed.title;
+    }
+
+    if (pushState) {
+      history.pushState({}, '', url);
+    }
+
+    updateActiveNav(new URL(url, window.location.href).pathname);
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+
+    if (lastPayload) {
+      updateFromPayload(lastPayload);
+    } else {
+      refreshStationData();
+    }
+  } catch (error) {
+    window.location.href = url;
+  }
+};
+
+const showTermsIfNeeded = () => {
+  if (!termsConsent) return;
+  const accepted = localStorage.getItem(TERMS_KEY) === 'yes';
+  termsConsent.hidden = accepted;
 };
 
 if (audio) {
@@ -233,7 +260,7 @@ if (volumeRange && audio) {
   });
 }
 
-document.addEventListener('click', async (event) => {
+document.addEventListener('click', (event) => {
   const acceptButton = event.target.closest('[data-accept-terms]');
   if (acceptButton) {
     localStorage.setItem(TERMS_KEY, 'yes');
@@ -250,31 +277,42 @@ document.addEventListener('click', async (event) => {
 
   const link = event.target.closest('a');
   if (!shouldHandleInternalLink(link)) return;
+
   const destination = new URL(link.href, window.location.href);
-  const normalized = normalizePath(destination.pathname);
-  if (!ROUTES[normalized]) return;
+  if (destination.pathname === window.location.pathname && destination.hash) return;
+
   event.preventDefault();
-  await renderRoute(normalized, { pushState: true });
+  navigateTo(destination.href);
 });
 
 window.addEventListener('popstate', () => {
-  renderRoute(window.location.pathname).catch(() => {
-    if (normalizePath(window.location.pathname) !== '/') window.location.href = '/';
-  });
+  navigateTo(window.location.href, { pushState: false });
 });
 
-if (playToggle) playToggle.addEventListener('click', togglePlayback);
+if (playToggle) {
+  playToggle.addEventListener('click', togglePlayback);
+}
 
 if (audio) {
-  audio.addEventListener('ended', () => { isPlaying = false; setPlayButtonState(); });
-  audio.addEventListener('pause', () => { isPlaying = false; setPlayButtonState(); });
-  audio.addEventListener('play', () => { isPlaying = true; setPlayButtonState(); });
+  audio.addEventListener('ended', () => {
+    isPlaying = false;
+    setPlayButtonState();
+  });
+
+  audio.addEventListener('pause', () => {
+    isPlaying = false;
+    setPlayButtonState();
+  });
+
+  audio.addEventListener('play', () => {
+    isPlaying = true;
+    setPlayButtonState();
+  });
 }
 
 syncYear();
+updateActiveNav();
 showTermsIfNeeded();
 setPlayButtonState();
-updateActiveNav();
-renderRoute(window.location.pathname).catch(() => renderRoute('/'));
 refreshStationData();
-refreshTimer = setInterval(refreshStationData, 30000);
+setInterval(refreshStationData, 30000);
