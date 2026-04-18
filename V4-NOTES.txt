@@ -1,4 +1,0 @@
-DJMixHub v4 package
-
-This zip is intended to be merged into the existing GitHub repository.
-Existing DJ image files were not bundled here, so keep the current assets/img folder contents from your repo.
