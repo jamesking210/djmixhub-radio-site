@@ -1,0 +1,7 @@
+services:
+  djmixhub-site:
+    build: .
+    container_name: djmixhub-site
+    ports:
+      - "8085:80"
+    restart: unless-stopped

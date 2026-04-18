@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About | DJMixHub.com</title>
+  <meta name="description" content="Learn about DJMixHub.com, the station vibe, and what makes the sound unique." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <div class="container nav-wrap">
+        <a class="brand" href="index.html" aria-label="DJMixHub home">
+          <img src="assets/img/logo.jpg" alt="DJMixHub logo" />
+          <div>
+            <span class="brand-title">DJMixHub.com</span>
+            <span class="brand-subtitle">Live internet radio</span>
+          </div>
+        </a>
+        <nav class="site-nav">
+          <a href="index.html">Home</a>
+          <a class="active" href="about.html">About</a>
+          <a href="djs.html">DJ Bios</a>
+          <a class="nav-cta" href="https://radio.djmixhub.com/" target="_blank" rel="noopener">AzuraCast Admin</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="subpage-main">
+      <section class="subpage-hero">
+        <div class="container narrow">
+          <p class="eyebrow">About the station</p>
+          <h1>The sound of DJMixHub.com</h1>
+          <p>
+            This page is ready for your real station story. Replace this text with your history, music mission,
+            target audience, schedule highlights, and what makes DJMixHub different from every other stream.
+          </p>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <div class="container content-grid">
+          <article class="glass-card prose-card">
+            <h2>Who we are</h2>
+            <p>
+              DJMixHub.com is built to feel like a branded home for your live radio stream, not just a plain player page.
+              Use this section to tell listeners what they can expect, the genres you focus on, and the energy behind the station.
+            </p>
+            <p>
+              Good items to add here: founding story, whether the station is live or automated, your focus on remixes or themed blocks,
+              and how listeners can connect with you.
+            </p>
+          </article>
+          <article class="glass-card prose-card">
+            <h2>What we play</h2>
+            <p>
+              Add your rotation details here. Example ideas: house remixes, EDM, throwbacks, dance pop, club edits, late-night sessions,
+              guest mix hours, specialty shows, and featured weekend blocks.
+            </p>
+            <ul>
+              <li>High-energy live mixes</li>
+              <li>Retro club throwbacks</li>
+              <li>Weekend guest DJ sessions</li>
+              <li>Curated themed blocks</li>
+            </ul>
+          </article>
+          <article class="glass-card prose-card full-width">
+            <h2>Want to connect?</h2>
+            <p>
+              Replace this section with contact details, booking info, social links, request lines, or sponsor information.
+              You can also add a schedule table or embed extra content later.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-wrap">
+        <p>© <span id="year"></span> DJMixHub.com</p>
+        <p>Streaming powered by AzuraCast at radio.djmixhub.com</p>
+      </div>
+    </footer>
+  </div>
+
+  <div class="player-dock">
+    <div class="player-dock-inner container">
+      <div class="player-meta">
+        <img src="assets/img/logo.jpg" alt="DJMixHub logo small" class="player-logo" />
+        <div>
+          <span class="player-station">DJMixHub Live</span>
+          <strong id="dock-track">Loading stream data...</strong>
+          <span id="dock-artist">Waiting for AzuraCast response</span>
+        </div>
+      </div>
+      <div class="player-controls">
+        <button id="play-toggle" class="player-btn" type="button" aria-label="Play or pause">▶</button>
+        <label class="volume-wrap" for="volume-range">Volume</label>
+        <input id="volume-range" type="range" min="0" max="1" step="0.01" value="0.85" />
+        <a class="listen-link" href="https://radio.djmixhub.com/public/djmixhub" target="_blank" rel="noopener">Open player</a>
+      </div>
+      <audio id="station-audio" preload="none" crossorigin="anonymous"></audio>
+    </div>
+  </div>
+
+  <script src="assets/js/player.js"></script>
+</body>
+</html>

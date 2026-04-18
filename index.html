@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DJMixHub.com | Live Radio</title>
+  <meta name="description" content="DJMixHub.com is your home for live mixes, nonstop energy, and DJ-driven radio." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <div class="container nav-wrap">
+        <a class="brand" href="index.html" aria-label="DJMixHub home">
+          <img src="assets/img/logo.jpg" alt="DJMixHub logo" />
+          <div>
+            <span class="brand-title">DJMixHub.com</span>
+            <span class="brand-subtitle">Live internet radio</span>
+          </div>
+        </a>
+        <nav class="site-nav">
+          <a class="active" href="index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="djs.html">DJ Bios</a>
+          <a class="nav-cta" href="https://radio.djmixhub.com/" target="_blank" rel="noopener">AzuraCast Admin</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Now streaming from radio.djmixhub.com</p>
+            <h1>Dark, loud, and always live.</h1>
+            <p class="hero-text">
+              DJMixHub.com is built for club energy, late-night mixes, throwbacks, remixes, and nonstop motion.
+              Tune in, turn it up, and keep the player with you on every page.
+            </p>
+            <div class="hero-actions">
+              <button class="primary-btn js-play-toggle" type="button">Play Station</button>
+              <a class="secondary-btn" href="https://radio.djmixhub.com/public/djmixhub" target="_blank" rel="noopener">Open Full Player</a>
+            </div>
+            <div class="hero-stats">
+              <div class="stat-card">
+                <span class="stat-label">Status</span>
+                <strong id="hero-live-status">Checking feed...</strong>
+              </div>
+              <div class="stat-card">
+                <span class="stat-label">Current track</span>
+                <strong id="hero-track">Loading...</strong>
+              </div>
+            </div>
+          </div>
+          <div class="hero-panel glass-card">
+            <div class="hero-panel-header">
+              <span class="pill">Live station</span>
+              <span class="mini-status" id="hero-mini-status">Connecting</span>
+            </div>
+            <img class="hero-logo" src="assets/img/logo.jpg" alt="DJMixHub logo artwork" />
+            <div class="now-playing-card">
+              <span class="np-label">Now playing</span>
+              <h2 id="np-title">Loading track info...</h2>
+              <p id="np-artist">Please wait while we contact AzuraCast.</p>
+            </div>
+            <div class="recent-tracks">
+              <h3>Recent spins</h3>
+              <ul id="recent-tracks-list">
+                <li>Loading recent tracks...</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="feature-section">
+        <div class="container">
+          <div class="section-heading">
+            <p class="eyebrow">What listeners can expect</p>
+            <h2>A clean station site that feels like the brand.</h2>
+          </div>
+          <div class="feature-grid">
+            <article class="glass-card feature-card">
+              <h3>Listen live anywhere</h3>
+              <p>The built-in player stays available on every page so visitors can hit play without hunting for a stream link.</p>
+            </article>
+            <article class="glass-card feature-card">
+              <h3>Designed for your logo</h3>
+              <p>A dark neon look built around the DJMixHub color vibe, with pink, purple, and blue highlights that match the branding.</p>
+            </article>
+            <article class="glass-card feature-card">
+              <h3>Easy to self-host</h3>
+              <p>Static site + Docker + Nginx keeps deployment simple on your NUC and makes it easy to version on GitHub.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-band">
+        <div class="container cta-wrap glass-card">
+          <div>
+            <p class="eyebrow">Need station info?</p>
+            <h2>Use the About page for your station story and the DJ Bios page for show talent.</h2>
+          </div>
+          <div class="cta-buttons">
+            <a class="secondary-btn" href="about.html">About the station</a>
+            <a class="primary-btn" href="djs.html">Meet the DJs</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-wrap">
+        <p>© <span id="year"></span> DJMixHub.com</p>
+        <p>Streaming powered by AzuraCast at radio.djmixhub.com</p>
+      </div>
+    </footer>
+  </div>
+
+  <div class="player-dock">
+    <div class="player-dock-inner container">
+      <div class="player-meta">
+        <img src="assets/img/logo.jpg" alt="DJMixHub logo small" class="player-logo" />
+        <div>
+          <span class="player-station">DJMixHub Live</span>
+          <strong id="dock-track">Loading stream data...</strong>
+          <span id="dock-artist">Waiting for AzuraCast response</span>
+        </div>
+      </div>
+      <div class="player-controls">
+        <button id="play-toggle" class="player-btn" type="button" aria-label="Play or pause">▶</button>
+        <label class="volume-wrap" for="volume-range">Volume</label>
+        <input id="volume-range" type="range" min="0" max="1" step="0.01" value="0.85" />
+        <a class="listen-link" href="https://radio.djmixhub.com/public/djmixhub" target="_blank" rel="noopener">Open player</a>
+      </div>
+      <audio id="station-audio" preload="none" crossorigin="anonymous"></audio>
+    </div>
+  </div>
+
+  <script src="assets/js/player.js"></script>
+</body>
+</html>
