@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About | DJMixHub.com</title>
-  <meta name="description" content="Learn about DJMixHub.com, the station vibe, and what makes the sound unique." />
+  <meta name="description" content="Learn about DJMixHub.com, the station vibe, and how to connect with the DJs behind the mixes." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,21 +23,21 @@
         </a>
         <nav class="site-nav">
           <a href="index.html">Home</a>
-          <a class="active" href="about.html">About</a>
+          <a href="about.html">About</a>
           <a href="djs.html">DJ Bios</a>
-          <a class="nav-cta" href="https://radio.djmixhub.com/" target="_blank" rel="noopener">AzuraCast Admin</a>
+          <a class="nav-cta" href="https://radio.djmixhub.com/public/djmixhub" target="_blank" rel="noopener">Listen on AzuraCast</a>
         </nav>
       </div>
     </header>
 
-    <main class="subpage-main">
+    <main class="subpage-main" data-page="about">
       <section class="subpage-hero">
         <div class="container narrow">
           <p class="eyebrow">About the station</p>
-          <h1>The sound of DJMixHub.com</h1>
+          <h1>The story behind DJMixHub.com</h1>
           <p>
-            This page is ready for your real station story. Replace this text with your history, music mission,
-            target audience, schedule highlights, and what makes DJMixHub different from every other stream.
+            DJMixHub.com was created by Jimbo for fun as a free way to feature DJs from all around the world
+            and showcase their different music tastes, mixing styles, and energy.
           </p>
         </div>
       </section>
@@ -45,34 +45,35 @@
       <section class="content-section">
         <div class="container content-grid">
           <article class="glass-card prose-card">
-            <h2>Who we are</h2>
+            <h2>Why it exists</h2>
             <p>
-              DJMixHub.com is built to feel like a branded home for your live radio stream, not just a plain player page.
-              Use this section to tell listeners what they can expect, the genres you focus on, and the energy behind the station.
+              The goal is simple: give DJs a clean home on the web where listeners can tune in, discover new talent,
+              and keep the music going without digging through a boring control panel or generic player page.
             </p>
             <p>
-              Good items to add here: founding story, whether the station is live or automated, your focus on remixes or themed blocks,
-              and how listeners can connect with you.
+              DJMixHub.com is hosted with Docker and AzuraCast, making it easy to self-host, easy to update, and easy to grow over time.
             </p>
           </article>
           <article class="glass-card prose-card">
-            <h2>What we play</h2>
+            <h2>Built on open tools</h2>
             <p>
-              Add your rotation details here. Example ideas: house remixes, EDM, throwbacks, dance pop, club edits, late-night sessions,
-              guest mix hours, specialty shows, and featured weekend blocks.
+              This site is part of an openly managed project so it is easy to deploy and improve.
+              You can view the website repo here:
+              <a class="text-link" href="https://github.com/jamesking210/djmixhub-radio-site" target="_blank" rel="noopener">github.com/jamesking210/djmixhub-radio-site</a>.
             </p>
-            <ul>
-              <li>High-energy live mixes</li>
-              <li>Retro club throwbacks</li>
-              <li>Weekend guest DJ sessions</li>
-              <li>Curated themed blocks</li>
-            </ul>
+            <p>
+              The station itself lives at <a class="text-link" href="https://radio.djmixhub.com/public/djmixhub" target="_blank" rel="noopener">radio.djmixhub.com</a>,
+              powered by AzuraCast.
+            </p>
           </article>
-          <article class="glass-card prose-card full-width">
+          <article class="glass-card prose-card full-width" id="connect">
             <h2>Want to connect?</h2>
             <p>
-              Replace this section with contact details, booking info, social links, request lines, or sponsor information.
-              You can also add a schedule table or embed extra content later.
+              We are actively looking for new DJs to join the station and submit mixes from anywhere in the world.
+              If you have a sound, a style, or a set you want featured on DJMixHub, reach out and introduce yourself.
+            </p>
+            <p>
+              Contact: <a class="text-link" href="mailto:jimbo@djmixhub.com">jimbo@djmixhub.com</a>
             </p>
           </article>
         </div>
@@ -82,7 +83,11 @@
     <footer class="site-footer">
       <div class="container footer-wrap">
         <p>© <span id="year"></span> DJMixHub.com</p>
-        <p>Streaming powered by AzuraCast at radio.djmixhub.com</p>
+        <div class="footer-links">
+          <a href="terms.html">Terms &amp; Conditions</a>
+          <a href="mailto:jimbo@djmixhub.com">jimbo@djmixhub.com</a>
+          <a href="https://radio.djmixhub.com/public/djmixhub" target="_blank" rel="noopener">Open full player</a>
+        </div>
       </div>
     </footer>
   </div>
@@ -106,7 +111,20 @@
       <audio id="station-audio" preload="none" crossorigin="anonymous"></audio>
     </div>
   </div>
-
+  <div class="terms-popup" id="terms-consent" hidden>
+    <div class="terms-popup-card glass-card">
+      <p class="terms-popup-title">Before you listen</p>
+      <p>
+        By using DJMixHub.com and its player, you agree to our <a href="terms.html">Terms &amp; Conditions</a>.
+        We may log IP address, approximate location, browser or device details, timestamps, and player activity for security,
+        performance, abuse prevention, and station operations.
+      </p>
+      <div class="terms-popup-actions">
+        <a class="secondary-btn" href="terms.html">View Terms</a>
+        <button class="primary-btn" type="button" data-accept-terms>I Agree</button>
+      </div>
+    </div>
+  </div>
   <script src="assets/js/player.js"></script>
 </body>
 </html>

@@ -179,13 +179,15 @@ input {
 .prose-card p,
 .feature-card p,
 .dj-card p,
-.cta-wrap p {
+.cta-wrap p,
+.terms-popup-card p {
   color: var(--muted);
   line-height: 1.7;
 }
 
 .hero-actions,
-.cta-buttons {
+.cta-buttons,
+.terms-popup-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.85rem;
@@ -308,7 +310,8 @@ input {
 .feature-card h3,
 .prose-card h2,
 .dj-card h2,
-.cta-wrap h2 {
+.cta-wrap h2,
+.terms-popup-title {
   margin: 0.3rem 0 0.3rem;
 }
 
@@ -342,13 +345,18 @@ input {
 .feature-card,
 .prose-card,
 .dj-card,
-.cta-wrap {
+.cta-wrap,
+.terms-popup-card {
   border-radius: var(--radius-xl);
   padding: 1.35rem;
 }
 
 .content-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.terms-grid {
+  align-items: start;
 }
 
 .full-width {
@@ -361,16 +369,34 @@ input {
   line-height: 1.8;
 }
 
+.text-link {
+  color: #ffb8e8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .dj-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.avatar-badge {
-  width: 68px;
-  height: 68px;
-  background: linear-gradient(135deg, rgba(255,46,168,0.35), rgba(61,168,255,0.24));
-  color: white;
-  font-size: 1rem;
+.dj-photo {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 22px;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+}
+
+.logo-card-image {
+  object-fit: contain;
+  padding: 1rem;
+  background: radial-gradient(circle at center, rgba(159,77,255,0.22), rgba(255,255,255,0.02));
+}
+
+.dj-card-open {
+  border-color: rgba(255, 46, 168, 0.22);
 }
 
 .dj-meta {
@@ -399,6 +425,16 @@ input {
   color: var(--muted);
   font-size: 0.92rem;
   flex-wrap: wrap;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-links a:hover {
+  color: var(--text);
 }
 
 .player-dock {
@@ -488,6 +524,31 @@ input {
   border: 1px solid rgba(255,255,255,0.1);
 }
 
+.terms-popup {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: 108px;
+  z-index: 55;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.terms-popup[hidden] {
+  display: none;
+}
+
+.terms-popup-card {
+  width: min(720px, 100%);
+  pointer-events: auto;
+}
+
+.terms-popup-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
 @media (max-width: 980px) {
   .hero-grid,
   .feature-grid,
@@ -552,5 +613,9 @@ input {
 
   #volume-range {
     width: 100%;
+  }
+
+  .terms-popup {
+    bottom: 176px;
   }
 }
