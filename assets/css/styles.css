@@ -12,6 +12,7 @@
   --shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
   --radius-xl: 28px;
   --radius-lg: 20px;
+  --radius-pill: 999px;
   --max-width: 1180px;
 }
 
@@ -40,9 +41,11 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 32px 32px;
-  mask-image: linear-gradient(to bottom, rgba(255,255,255,0.25), transparent 70%);
+  mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), transparent 70%);
 }
 
 img {
@@ -70,7 +73,7 @@ input {
 }
 
 .site-shell {
-  padding-bottom: 120px;
+  padding-bottom: 128px;
 }
 
 .site-header {
@@ -78,7 +81,7 @@ input {
   top: 0;
   z-index: 30;
   backdrop-filter: blur(20px);
-  background: rgba(5, 3, 10, 0.68);
+  background: rgba(5, 3, 10, 0.72);
   border-bottom: 1px solid var(--line);
 }
 
@@ -129,7 +132,7 @@ input {
 
 .site-nav a {
   padding: 0.75rem 1rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   color: var(--muted);
   transition: 0.2s ease;
 }
@@ -142,7 +145,7 @@ input {
 
 .site-nav .nav-cta {
   background: linear-gradient(135deg, rgba(255, 46, 168, 0.22), rgba(61, 168, 255, 0.2));
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text);
 }
 
@@ -153,7 +156,7 @@ input {
 
 .hero-grid {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: 1.08fr 0.92fr;
   gap: 1.5rem;
   align-items: center;
 }
@@ -170,7 +173,7 @@ input {
 .hero h1,
 .subpage-hero h1 {
   margin: 0;
-  font-size: clamp(2.5rem, 5vw, 4.6rem);
+  font-size: clamp(2.4rem, 5vw, 4.6rem);
   line-height: 0.96;
 }
 
@@ -201,7 +204,7 @@ input {
   justify-content: center;
   min-height: 50px;
   padding: 0.85rem 1.25rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   font-weight: 700;
   border: 1px solid transparent;
   cursor: pointer;
@@ -235,7 +238,7 @@ input {
 .stat-card,
 .glass-card {
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(180deg, rgba(26, 19, 48, 0.78), rgba(10, 7, 22, 0.88));
+  background: linear-gradient(180deg, rgba(26, 19, 48, 0.78), rgba(10, 7, 22, 0.9));
   box-shadow: var(--shadow);
   backdrop-filter: blur(14px);
 }
@@ -263,7 +266,6 @@ input {
 
 .hero-panel-header,
 .footer-wrap,
-.player-dock-inner,
 .dj-meta {
   display: flex;
   justify-content: space-between;
@@ -271,13 +273,16 @@ input {
   gap: 1rem;
 }
 
+.hero-art-wrap {
+  margin: 1.25rem 0 0.95rem;
+}
+
 .pill,
-.mini-status,
-.avatar-badge {
+.mini-status {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   padding: 0.55rem 0.9rem;
   font-weight: 700;
   font-size: 0.8rem;
@@ -295,9 +300,13 @@ input {
 
 .hero-logo {
   width: 100%;
-  max-width: 320px;
-  margin: 1.25rem auto;
-  border-radius: 30px;
+  max-width: 360px;
+  margin: 0 auto;
+  border-radius: 28px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .now-playing-card {
@@ -379,20 +388,24 @@ input {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.dj-card {
+  min-height: 100%;
+}
+
 .dj-photo {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   border-radius: 22px;
   margin-bottom: 1rem;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .logo-card-image {
   object-fit: contain;
   padding: 1rem;
-  background: radial-gradient(circle at center, rgba(159,77,255,0.22), rgba(255,255,255,0.02));
+  background: radial-gradient(circle at center, rgba(159, 77, 255, 0.22), rgba(255, 255, 255, 0.02));
 }
 
 .dj-card-open {
@@ -437,20 +450,28 @@ input {
   color: var(--text);
 }
 
+.route-section {
+  display: none;
+}
+
+.route-section.active {
+  display: block;
+}
+
 .player-dock {
   position: fixed;
   inset-inline: 0;
   bottom: 0;
   z-index: 40;
-  background: rgba(5, 4, 10, 0.88);
+  background: rgba(5, 4, 10, 0.9);
   border-top: 1px solid rgba(255, 255, 255, 0.09);
   backdrop-filter: blur(18px);
 }
 
 .player-dock-inner {
-  min-height: 92px;
+  min-height: 96px;
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   padding: 1rem 0;
   gap: 1rem;
@@ -463,6 +484,10 @@ input {
   min-width: 0;
 }
 
+.player-meta-copy {
+  min-width: 0;
+}
+
 .player-meta strong,
 .player-meta span {
   display: block;
@@ -470,17 +495,19 @@ input {
 
 .player-meta strong,
 #hero-track,
-#np-title {
+#np-title,
+#dock-track {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .player-logo {
-  width: 56px;
-  height: 56px;
+  width: 58px;
+  height: 58px;
   border-radius: 16px;
   object-fit: cover;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 #dock-artist,
@@ -508,6 +535,12 @@ input {
   box-shadow: 0 10px 25px rgba(159, 77, 255, 0.32);
 }
 
+.player-volume-group {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
 .volume-wrap {
   color: var(--muted);
   font-size: 0.95rem;
@@ -519,16 +552,16 @@ input {
 
 .listen-link {
   padding: 0.8rem 1rem;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .terms-popup {
   position: fixed;
   left: 1rem;
   right: 1rem;
-  bottom: 108px;
+  bottom: 112px;
   z-index: 55;
   display: flex;
   justify-content: center;
@@ -547,6 +580,11 @@ input {
 .terms-popup-title {
   font-size: 1.15rem;
   font-weight: 800;
+}
+
+.helper-note {
+  color: var(--muted);
+  font-size: 0.95rem;
 }
 
 @media (max-width: 980px) {
@@ -568,7 +606,8 @@ input {
   .footer-wrap,
   .hero-panel-header,
   .player-controls,
-  .dj-meta {
+  .dj-meta,
+  .player-volume-group {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -594,7 +633,7 @@ input {
   }
 
   .site-shell {
-    padding-bottom: 165px;
+    padding-bottom: 178px;
   }
 
   .brand img {
@@ -616,6 +655,6 @@ input {
   }
 
   .terms-popup {
-    bottom: 176px;
+    bottom: 182px;
   }
 }

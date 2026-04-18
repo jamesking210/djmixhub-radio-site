@@ -1,0 +1,2 @@
+Keep the existing image files from your current repo in this folder.
+This v4 package does not replace them.
