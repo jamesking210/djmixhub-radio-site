@@ -1,5 +1,0 @@
-Keep your existing repo image files in this folder:
-- logo.jpg
-- logo.png
-- JimboSliceChicago.png
-- ChuckTheDJCA.png
