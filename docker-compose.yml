@@ -1,0 +1,9 @@
+services:
+  djmixhub-site:
+    build: .
+    container_name: djmixhub-site
+    ports:
+      - "8085:80"
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
