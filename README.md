@@ -126,3 +126,7 @@ If the Now Playing data does not update, the most likely causes are:
 4. Run `docker compose up -d --build`
 5. Point `djmixhub.com` to port `8085`
 
+
+
+## SPA routing update
+This version uses a single-page shell so the audio player keeps playing while moving between site pages. Nginx is configured with `try_files $uri $uri/ /index.html;` so clean routes like `/about` and `/djs` work without restarting the stream.
