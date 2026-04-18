@@ -89,7 +89,8 @@ input {
 .footer-wrap,
 .player-dock-inner,
 .hero-panel-header,
-.dj-meta {
+.dj-meta,
+.schedule-board-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -172,7 +173,8 @@ input {
 .hero-grid,
 .feature-grid,
 .content-grid,
-.dj-grid {
+.dj-grid,
+.schedule-grid {
   display: grid;
   gap: 1rem;
 }
@@ -196,7 +198,11 @@ input {
 .prose-card p,
 .feature-card p,
 .dj-card p,
-.terms-popup-card p {
+.terms-popup-card p,
+.station-panel-text,
+.schedule-summary-card p,
+.schedule-meta,
+.schedule-row-time {
   color: var(--muted);
   line-height: 1.7;
 }
@@ -251,11 +257,10 @@ input {
   border-color: rgba(255, 255, 255, 0.11);
 }
 
-.hero-stats {
-  display: grid;
+.hero-stats,
+.schedule-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
-  margin-top: 1.35rem;
 }
 
 .stat-card,
@@ -275,7 +280,9 @@ input {
 .feature-card,
 .prose-card,
 .dj-card,
-.terms-popup-card {
+.terms-popup-card,
+.schedule-summary-card,
+.schedule-board {
   border-radius: var(--radius-xl);
   padding: 1.35rem;
 }
@@ -284,20 +291,39 @@ input {
   padding: 1.25rem;
 }
 
-.hero-art-shell {
-  margin: 1.25rem auto;
+.station-lockup {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 1rem;
+  align-items: center;
+  margin: 1.15rem 0 1.2rem;
 }
 
-.hero-art {
-  width: 100%;
-  max-width: 340px;
-  aspect-ratio: 1 / 1;
+.station-logo-panel {
+  width: 112px;
+  height: 112px;
   object-fit: cover;
-  margin: 0 auto;
-  border-radius: 30px;
+  border-radius: 28px;
   border: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 28px 48px rgba(0, 0, 0, 0.28);
-  background: rgba(255,255,255,0.04);
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.3);
+}
+
+.station-kicker {
+  margin: 0 0 0.35rem;
+  color: #f0a8da;
+  font-size: 0.82rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.station-panel-title {
+  margin: 0;
+  font-size: clamp(1.35rem, 2vw, 2rem);
+  line-height: 1.05;
+}
+
+.station-panel-text {
+  margin: 0.8rem 0 0;
 }
 
 .now-playing-card {
@@ -310,14 +336,17 @@ input {
 .feature-card h3,
 .prose-card h3,
 .dj-card h3,
-.terms-popup-title {
+.terms-popup-title,
+.schedule-summary-card h3,
+.schedule-board h3 {
   margin: 0.3rem 0;
 }
 
 .stat-label,
 .np-label,
 .player-station,
-.dj-tag {
+.dj-tag,
+.schedule-label {
   display: block;
   color: #f0a8da;
   font-size: 0.8rem;
@@ -379,6 +408,71 @@ input {
   color: #ffb8e8;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.schedule-board {
+  margin-top: 1rem;
+}
+
+.schedule-list {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.schedule-row {
+  display: grid;
+  grid-template-columns: 200px 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.05rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.035);
+}
+
+.schedule-row.is-live {
+  border-color: rgba(255, 46, 168, 0.28);
+  background: linear-gradient(135deg, rgba(255, 46, 168, 0.12), rgba(255,255,255,0.04));
+}
+
+.schedule-row-empty {
+  grid-template-columns: 1fr;
+  justify-items: start;
+}
+
+.schedule-row-day {
+  font-weight: 700;
+}
+
+.schedule-row-time {
+  font-size: 0.95rem;
+}
+
+.schedule-row h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.schedule-meta {
+  margin: 0.3rem 0 0;
+  font-size: 0.95rem;
+}
+
+.schedule-chip {
+  padding: 0.42rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.schedule-chip.live {
+  color: #ffb0e6;
+  border-color: rgba(255, 46, 168, 0.28);
+  background: rgba(255, 46, 168, 0.12);
 }
 
 .dj-photo {
@@ -443,16 +537,16 @@ input {
 }
 
 .player-dock-inner {
-  min-height: 94px;
+  min-height: 90px;
   display: grid;
   grid-template-columns: 1fr auto;
-  padding: 1rem 0;
+  padding: 0.9rem 0;
 }
 
 .player-meta {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
+  gap: 0.85rem;
   min-width: 0;
 }
 
@@ -461,12 +555,13 @@ input {
 }
 
 .player-art {
-  width: 58px;
-  height: 58px;
-  border-radius: 16px;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
   object-fit: cover;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
+  flex: 0 0 auto;
 }
 
 .player-meta strong,
@@ -476,7 +571,9 @@ input {
 
 .player-meta strong,
 #hero-track,
-#np-title {
+#np-title,
+#schedule-now,
+#schedule-next {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -567,6 +664,7 @@ input {
   .feature-grid,
   .content-grid,
   .dj-grid,
+  .schedule-grid,
   .player-dock-inner {
     grid-template-columns: 1fr;
   }
@@ -575,7 +673,8 @@ input {
   .footer-wrap,
   .hero-panel-header,
   .player-controls,
-  .dj-meta {
+  .dj-meta,
+  .schedule-board-header {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -596,6 +695,11 @@ input {
   .player-volume-group {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .schedule-row {
+    grid-template-columns: 1fr;
+    justify-items: start;
   }
 }
 
@@ -620,8 +724,22 @@ input {
     line-height: 1.02;
   }
 
+  .station-lockup {
+    grid-template-columns: 1fr;
+  }
+
+  .station-logo-panel {
+    width: 92px;
+    height: 92px;
+  }
+
   .player-dock-inner {
     padding-bottom: 1.25rem;
+  }
+
+  .player-art {
+    width: 48px;
+    height: 48px;
   }
 
   #volume-range {
