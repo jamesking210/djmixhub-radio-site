@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DJMixHub | Free Internet Radio</title>
+    <meta
+      name="description"
+      content="DJMixHub is a free internet radio station featuring mixes from DJs around the world. Listen live, meet the DJs, and connect with the station."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/svg+xml" href="assets/logo.jpg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="terms-gate" id="termsGate" aria-hidden="true">
+      <div class="terms-gate__card">
+        <span class="eyebrow">Before you listen</span>
+        <h2>Agree to the listener terms to start the player</h2>
+        <p>
+          DJMixHub uses listener analytics like IP address, rough location and device/browser details to keep the station running,
+          monitor performance and understand where listeners are tuning in from.
+        </p>
+        <div class="terms-gate__actions">
+          <a class="button button--ghost" href="terms.html">Read terms</a>
+          <button class="button button--primary" id="acceptTermsButton">I Agree &amp; Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="brand" href="#top" aria-label="DJMixHub home">
+          <img src="assets/logo.jpg" alt="DJMixHub" class="brand__logo" />
+          <div>
+            <strong>DJMixHub</strong>
+            <span>Free internet radio</span>
+          </div>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="#about">About</a>
+          <a href="#djs">DJs</a>
+          <a href="#schedule">Schedule</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero section">
+        <div class="container hero__grid">
+          <div class="hero__copy">
+            <span class="eyebrow">Always free. Always on.</span>
+            <h1>Real mixes. Real DJs. A station built for the love of it.</h1>
+            <p class="hero__lede">
+              DJMixHub is a dark, modern internet radio station built to feature DJs from all around the world and the different
+              styles they bring to the mix.
+            </p>
+            <div class="hero__actions">
+              <button class="button button--primary" id="heroListenButton">Start listening</button>
+              <a class="button button--ghost" href="#djs">Meet the DJs</a>
+            </div>
+            <ul class="hero__highlights" aria-label="Station highlights">
+              <li>Always free radio station</li>
+              <li>Docker + AzuraCast powered</li>
+              <li>Open DJ slots available</li>
+            </ul>
+          </div>
+          <aside class="hero__panel card">
+            <div class="hero__panel-top">
+              <span class="live-dot"></span>
+              <span id="heroStatus">Loading station status...</span>
+            </div>
+            <div class="hero__song">
+              <p class="hero__label">Now playing</p>
+              <h2 id="heroTrack">DJMixHub radio is warming up...</h2>
+              <p id="heroArtist">Checking the station feed</p>
+            </div>
+            <div class="hero__meta-grid">
+              <div>
+                <span class="meta-label">Listeners</span>
+                <strong id="heroListeners">--</strong>
+              </div>
+              <div>
+                <span class="meta-label">Stream</span>
+                <strong id="heroMode">Online</strong>
+              </div>
+            </div>
+            <p class="hero__microcopy">
+              Scroll the page, read about the station and browse the DJs — the player stays pinned at the bottom on this page.
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section id="about" class="section">
+        <div class="container section__grid">
+          <div>
+            <span class="eyebrow">About DJMixHub</span>
+            <h2>A station that feels personal on purpose</h2>
+            <p>
+              This is an always free radio station. Jimbo created DJMixHub for fun as a free way to feature DJs from all around
+              the world and show off their different music taste, mixing style and overall vibe.
+            </p>
+            <p>
+              The station is hosted with Docker and AzuraCast, and the site is intentionally simple: clean, stylish, fast and easy
+              to keep updated on GitHub.
+            </p>
+            <div class="about-links">
+              <a href="https://github.com/jamesking210/djmixhub-radio-site" target="_blank" rel="noreferrer">View the GitHub project</a>
+              <a href="https://radio.djmixhub.com" target="_blank" rel="noreferrer">Open the AzuraCast station</a>
+            </div>
+          </div>
+
+          <aside class="card connect-card">
+            <span class="eyebrow">Want to connect?</span>
+            <h3>We’re actively looking for new DJs and fresh mixes.</h3>
+            <p>
+              If you want to be part of DJMixHub, send a note, introduce yourself and let us know what kind of sound you bring.
+              We are accepting DJs and mix submissions.
+            </p>
+            <a class="connect-card__email" href="mailto:jimbo@djmixhub.com">jimbo@djmixhub.com</a>
+          </aside>
+        </div>
+      </section>
+
+      <section id="djs" class="section section--alt">
+        <div class="container">
+          <div class="section-heading">
+            <span class="eyebrow">Featured DJs</span>
+            <h2>The people behind the mixes</h2>
+            <p>Different backgrounds, different energy, same goal: keep the station sounding alive.</p>
+          </div>
+
+          <div class="dj-grid">
+            <article class="card dj-card">
+              <div class="dj-card__header">
+                <span class="dj-tag">Chicagoland</span>
+                <h3>JimboSliceChicago</h3>
+              </div>
+              <ul class="dj-card__list">
+                <li>From Chicagoland</li>
+                <li>Mixes on his free time</li>
+                <li>Tech nerd</li>
+                <li>DIYer</li>
+                <li>Cubs/Bears fan</li>
+              </ul>
+              <a href="https://twitch.tv/jimboslicechicago" target="_blank" rel="noreferrer">twitch.tv/jimboslicechicago</a>
+            </article>
+
+            <article class="card dj-card">
+              <div class="dj-card__header">
+                <span class="dj-tag">Northern California</span>
+                <h3>ChuckTheDJCA</h3>
+              </div>
+              <ul class="dj-card__list">
+                <li>From Northern California</li>
+                <li>Professional event DJ</li>
+                <li>Specializes in sound systems, DJing, lighting and more</li>
+                <li>Weddings, corporate events and private parties</li>
+              </ul>
+              <a href="https://twitch.tv/chuckthedjca" target="_blank" rel="noreferrer">twitch.tv/chuckthedjca</a>
+            </article>
+
+            <article class="card dj-card dj-card--open">
+              <div class="dj-card__header">
+                <span class="dj-tag">Position open</span>
+                <h3>This could be you</h3>
+              </div>
+              <div class="dj-card__open-mark">
+                <img src="assets/logo.jpg" alt="DJMixHub logo placeholder" />
+              </div>
+              <p>
+                We are accepting DJs and mixes. If you have a sound, a style and a reason people should tune in, we want to hear
+                from you.
+              </p>
+              <a href="mailto:jimbo@djmixhub.com?subject=DJMixHub%20DJ%20Submission">Reach out about joining the station</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="schedule" class="section">
+        <div class="container schedule-layout">
+          <div>
+            <span class="eyebrow">Schedule</span>
+            <h2>Built to look good now and grow later</h2>
+            <p>
+              DJMixHub is ready for a real show schedule later, but the section already works nicely today. Right now it can show
+              what is on air, what may be coming next and recent station activity without feeling empty or broken.
+            </p>
+            <p>
+              When you lock in a real show lineup, this section can be expanded to read more detailed AzuraCast schedule data.
+            </p>
+          </div>
+
+          <div class="card schedule-board">
+            <div class="schedule-board__row">
+              <div>
+                <span class="meta-label">Station status</span>
+                <strong id="scheduleStatus">Loading...</strong>
+              </div>
+              <div>
+                <span class="meta-label">Current listeners</span>
+                <strong id="scheduleListeners">--</strong>
+              </div>
+            </div>
+
+            <div class="schedule-block">
+              <span class="schedule-block__label">On air now</span>
+              <h3 id="scheduleNowTitle">Checking the stream...</h3>
+              <p id="scheduleNowMeta">We are pulling the latest station data.</p>
+            </div>
+
+            <div class="schedule-block">
+              <span class="schedule-block__label">Up next</span>
+              <h3 id="scheduleNextTitle">Curated station rotation</h3>
+              <p id="scheduleNextMeta">Full scheduled show blocks can be added later.</p>
+            </div>
+
+            <div class="schedule-block">
+              <span class="schedule-block__label">Recently played</span>
+              <ul id="recentTracks" class="recent-tracks">
+                <li>Loading recent tracks...</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <p>DJMixHub — free internet radio built for fun, mixes and good taste.</p>
+        <div>
+          <a href="terms.html">Terms &amp; Conditions</a>
+          <a href="mailto:jimbo@djmixhub.com">jimbo@djmixhub.com</a>
+        </div>
+      </div>
+    </footer>
+
+    <div class="bottom-player" id="bottomPlayer">
+      <div class="bottom-player__art-wrap">
+        <img id="playerArt" class="bottom-player__art" src="assets/logo.jpg" alt="Current artwork" />
+      </div>
+
+      <div class="bottom-player__track">
+        <div class="bottom-player__status-line">
+          <span class="status-pill" id="playerStatus">Loading...</span>
+          <span class="player-listener-count"><span id="playerListeners">--</span> listening</span>
+        </div>
+        <strong id="playerTitle">DJMixHub radio</strong>
+        <span id="playerArtist">Fetching current track info...</span>
+      </div>
+
+      <div class="bottom-player__controls">
+        <button class="player-button" id="playPauseButton" aria-label="Play station" disabled>
+          <span id="playPauseLabel">Play</span>
+        </button>
+        <button class="button button--ghost button--small" id="playerAgreeButton">Agree to listen</button>
+      </div>
+
+      <audio id="radioPlayer" preload="none"></audio>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
