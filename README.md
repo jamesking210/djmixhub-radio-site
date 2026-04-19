@@ -29,7 +29,6 @@ This project is intentionally lightweight:
 ```text
 .
 ├── assets/
-│   ├── logo.svg
 │   ├── logo.jpg
 │   ├── JimboSliceChicago.png
 │   └── ChuckTheDJCA.png
@@ -45,19 +44,19 @@ This project is intentionally lightweight:
 
 ## Player data source
 
-The site reads station info from:
+The site reads station info directly from:
 
 ```text
-/azuracast/api/nowplaying_static/djmixhub.json
+https://radio.djmixhub.com/api/nowplaying_static/djmixhub.json
 ```
 
-Inside the container, Nginx proxies `/azuracast/` to:
+The stream fallback also points directly at:
 
 ```text
-https://radio.djmixhub.com/
+https://radio.djmixhub.com/listen/djmixhub/radio.mp3
 ```
 
-That keeps the front end simple and avoids browser-side cross-origin headaches for the metadata request.
+This keeps the site simple and avoids relying on a local metadata proxy.
 
 ## Local deploy
 
@@ -84,7 +83,7 @@ Example idea:
 
 ## Customizing the logo
 
-The project keeps `assets/logo.svg` as a safe fallback, but the current layout is wired to use these files if you add them:
+The current layout is wired to use these files:
 
 ```text
 assets/logo.jpg
@@ -92,7 +91,7 @@ assets/JimboSliceChicago.png
 assets/ChuckTheDJCA.png
 ```
 
-If any of those files are missing, the site falls back cleanly instead of breaking the layout.
+Keep `assets/logo.jpg` in place so the brand image appears everywhere across the site and player.
 
 ## Customizing the stream URL
 

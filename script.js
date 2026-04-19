@@ -1,9 +1,9 @@
 const CONFIG = {
   termsKey: 'djmixhub_terms_accepted_v1',
   volumeKey: 'djmixhub_player_volume_v1',
-  nowPlayingUrl: '/azuracast/api/nowplaying_static/djmixhub.json',
+  nowPlayingUrl: 'https://radio.djmixhub.com/api/nowplaying_static/djmixhub.json',
   fallbackStreamUrl: 'https://radio.djmixhub.com/listen/djmixhub/radio.mp3',
-  fallbackArtwork: 'assets/logo.svg',
+  fallbackArtwork: 'assets/logo.jpg',
   pollIntervalMs: 15000
 };
 
@@ -159,6 +159,27 @@ function getStatusText(np) {
   return 'Station offline';
 }
 
+
+function normalizePossibleUrl(value) {
+  if (!value || typeof value !== 'string') {
+    return '';
+  }
+
+  if (value.startsWith('http://') || value.startsWith('https://')) {
+    return value;
+  }
+
+  if (value.startsWith('//')) {
+    return `https:${value}`;
+  }
+
+  if (value.startsWith('/')) {
+    return `https://radio.djmixhub.com${value}`;
+  }
+
+  return value;
+}
+
 function getSourceText(np) {
   const isLive = Boolean(np?.live?.is_live);
   const streamerName = np?.live?.streamer_name?.trim();
@@ -185,7 +206,7 @@ function updateNowPlayingUi(np) {
 
   const title = nowSong.title || 'DJMixHub radio';
   const artist = nowSong.artist || (isLive && streamerName ? streamerName : 'Always free internet radio');
-  const art = nowSong.art || np?.live?.art || CONFIG.fallbackArtwork;
+  const art = normalizePossibleUrl(nowSong.art || np?.live?.art) || CONFIG.fallbackArtwork;
 
   if (elements.playerArt) {
     elements.playerArt.src = art;
@@ -246,7 +267,7 @@ function updateNowPlayingUi(np) {
     }
   }
 
-  const listenUrl = np?.station?.listen_url;
+  const listenUrl = normalizePossibleUrl(np?.station?.listen_url);
   if (listenUrl) {
     state.currentStreamUrl = listenUrl;
   }
