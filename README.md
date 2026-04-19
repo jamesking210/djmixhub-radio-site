@@ -15,7 +15,7 @@ This project is intentionally lightweight:
 
 - Dark, modern radio-station style
 - Fixed bottom player
-- Play/pause control
+- Play and stop controls
 - Current song title
 - Artist name
 - Listener count
@@ -29,7 +29,10 @@ This project is intentionally lightweight:
 ```text
 .
 ├── assets/
-│   └── logo.svg
+│   ├── logo.svg
+│   ├── logo.jpg
+│   ├── JimboSliceChicago.png
+│   └── ChuckTheDJCA.png
 ├── index.html
 ├── terms.html
 ├── styles.css
@@ -81,15 +84,15 @@ Example idea:
 
 ## Customizing the logo
 
-Right now the project includes a simple SVG logo placeholder so the site is ready to run immediately.
-
-To use your real logo, replace:
+The project keeps `assets/logo.svg` as a safe fallback, but the current layout is wired to use these files if you add them:
 
 ```text
-assets/logo.svg
+assets/logo.jpg
+assets/JimboSliceChicago.png
+assets/ChuckTheDJCA.png
 ```
 
-with your preferred logo file and update the references in `index.html` and `terms.html` if needed.
+If any of those files are missing, the site falls back cleanly instead of breaking the layout.
 
 ## Customizing the stream URL
 

@@ -3,29 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DJMixHub | Terms & Conditions</title>
-    <meta name="description" content="DJMixHub listener terms and conditions." />
+    <title>DJMixHub | Terms &amp; Conditions</title>
+    <meta
+      name="description"
+      content="DJMixHub terms and conditions for listeners using the DJMixHub website and embedded radio player."
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" type="image/svg+xml" href="assets/logo.jpg" />
+    <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body class="terms-page">
+  <body>
     <header class="site-header">
       <div class="container site-header__inner">
-        <a class="brand" href="index.html" aria-label="DJMixHub home">
-          <img src="assets/logo.jpg" alt="DJMixHub" class="brand__logo" />
+        <a class="brand" href="index.html#top" aria-label="DJMixHub home">
+          <img
+            src="assets/logo.jpg"
+            alt="DJMixHub"
+            class="brand__logo"
+            onerror="this.onerror=null;this.src='assets/logo.svg';"
+          />
           <div>
             <strong>DJMixHub</strong>
-            <span>Terms &amp; Conditions</span>
+            <span>Terms &amp; conditions</span>
           </div>
         </a>
         <nav class="site-nav" aria-label="Secondary navigation">
-          <a href="index.html">Back to home</a>
+          <a href="index.html#about">About</a>
+          <a href="index.html#djs">DJs</a>
+          <a href="index.html#schedule">Schedule</a>
         </nav>
       </div>
     </header>
@@ -33,82 +43,81 @@
     <main class="section">
       <div class="container terms-layout">
         <div class="section-heading section-heading--left">
-          <span class="eyebrow">Listener terms</span>
-          <h1>Terms &amp; Conditions</h1>
+          <span class="eyebrow">DJMixHub terms</span>
+          <h1>Listener terms &amp; conditions</h1>
           <p>
-            By clicking agree and listening to DJMixHub, you accept these basic terms for use of the website and player.
+            These terms are here to keep things clear and reasonable. By using the DJMixHub website or starting the player, you
+            agree to the basics below.
           </p>
         </div>
 
-        <div class="card terms-card">
-          <section>
-            <h2>1. Using the station</h2>
+        <div class="terms-stack">
+          <article class="card terms-card">
+            <h2>1. Using the site and player</h2>
             <p>
-              DJMixHub is an always free internet radio station. The stream is provided for personal listening and general public
-              enjoyment. Availability is not guaranteed and the stream, website or station features may change at any time.
+              DJMixHub is a free internet radio station. The website and player are provided as-is for listening, exploring the
+              station and learning more about the DJs and mixes featured here.
             </p>
-          </section>
+          </article>
 
-          <section>
-            <h2>2. Listener analytics and tracking</h2>
+          <article class="card terms-card">
+            <h2>2. Analytics and listener data</h2>
             <p>
-              When you use the website or stream, we may collect standard listener and server-side analytics such as your IP
-              address, rough location derived from that IP, browser type, device type, referrer information, stream connection
-              details and basic listening activity. This information is used to keep the station running, troubleshoot problems,
-              understand audience reach and improve the service.
+              By using the site and player, you agree that DJMixHub and the underlying streaming platform may collect standard
+              technical and listener analytics. This can include your IP address, rough geographic location derived from IP,
+              browser/device information, referral data and listening/session activity.
             </p>
             <p>
-              We do not sell your personal data. Listener analytics may be handled by DJMixHub, AzuraCast, hosting providers,
-              reverse proxies or standard web infrastructure used to operate the station.
+              This information is used for station analytics, reliability, abuse prevention, troubleshooting and understanding where
+              listeners are tuning in from. DJMixHub does not sell your personal data.
             </p>
-          </section>
+          </article>
 
-          <section>
+          <article class="card terms-card">
             <h2>3. Content and availability</h2>
             <p>
-              Tracks, mixes, metadata, artwork and schedule information may occasionally be incomplete, delayed or inaccurate.
-              DJMixHub may add, remove or replace content, DJs or stream features at any time.
+              DJMixHub may update mixes, DJs, artwork, branding or site content at any time. Stream availability is not guaranteed,
+              and the player or site may go offline, change or be interrupted without notice.
             </p>
-          </section>
+          </article>
 
-          <section>
+          <article class="card terms-card">
             <h2>4. Acceptable use</h2>
             <p>
-              Do not abuse the website, interfere with the stream, attempt unauthorized access or use the service in a way that
-              harms the station, its DJs, its hosting or its listeners. Access may be blocked for abusive or suspicious activity.
+              You agree not to misuse the site, attack the stream, attempt to interfere with service, scrape the platform in a way
+              that harms performance or use the station in any unlawful way.
             </p>
-          </section>
+          </article>
 
-          <section>
-            <h2>5. Third-party links</h2>
+          <article class="card terms-card">
+            <h2>5. External services</h2>
             <p>
-              The site may link to third-party services like Twitch, GitHub or external DJ pages. DJMixHub is not responsible for
-              the content, privacy practices or uptime of third-party websites.
+              DJMixHub runs on Docker and AzuraCast and may link to outside platforms like Twitch or GitHub. Those services have
+              their own terms and privacy practices.
             </p>
-          </section>
+          </article>
 
-          <section>
-            <h2>6. Contact</h2>
+          <article class="card terms-card">
+            <h2>6. No warranties</h2>
             <p>
-              For questions, submissions or station-related contact, email
+              The site and stream are provided without warranties of any kind, express or implied. DJMixHub is a fun project and is
+              offered in good faith, but there are no guarantees around uptime, compatibility or uninterrupted listening.
+            </p>
+          </article>
+
+          <article class="card terms-card">
+            <h2>7. Contact</h2>
+            <p>
+              Questions about the station, mixes or these terms can be sent to
               <a href="mailto:jimbo@djmixhub.com">jimbo@djmixhub.com</a>.
             </p>
-          </section>
+          </article>
+        </div>
 
-          <div class="terms-actions">
-            <a class="button button--ghost" href="index.html">Back to home</a>
-            <button class="button button--primary" id="acceptTermsPageButton">I Agree &amp; Return to Listening</button>
-          </div>
+        <div class="terms-actions">
+          <a class="button button--primary" href="index.html">Back to DJMixHub</a>
         </div>
       </div>
     </main>
-
-    <script>
-      const TERMS_KEY = 'djmixhub_terms_accepted_v1';
-      document.getElementById('acceptTermsPageButton').addEventListener('click', () => {
-        localStorage.setItem(TERMS_KEY, 'true');
-        window.location.href = 'index.html';
-      });
-    </script>
   </body>
 </html>
