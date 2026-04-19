@@ -1,6 +1,6 @@
 const CONFIG = {
   termsKey: 'djmixhub_terms_accepted_v1',
-  volumeKey: 'djmixhub_player_volume_v1',
+  volumeKey: 'djmixhub_player_volume_v2',
   nowPlayingUrl: 'https://radio.djmixhub.com/api/nowplaying_static/djmixhub.json',
   fallbackStreamUrl: 'https://radio.djmixhub.com/listen/djmixhub/radio.mp3',
   fallbackArtwork: 'assets/logo.jpg',
@@ -12,7 +12,7 @@ const state = {
   isPlaying: false,
   currentStreamUrl: CONFIG.fallbackStreamUrl,
   pollTimer: null,
-  volume: 0.85
+  volume: 1
 };
 
 const elements = {
@@ -52,12 +52,18 @@ function readTermsState() {
 
 function readVolumeState() {
   const savedVolume = Number(localStorage.getItem(CONFIG.volumeKey));
+
   if (!Number.isNaN(savedVolume) && savedVolume >= 0 && savedVolume <= 1) {
     state.volume = savedVolume;
+  } else {
+    state.volume = 1;
+    localStorage.setItem(CONFIG.volumeKey, '1');
   }
+
   if (elements.volumeSlider) {
     elements.volumeSlider.value = String(state.volume);
   }
+
   if (elements.radioPlayer) {
     elements.radioPlayer.volume = state.volume;
   }
@@ -65,15 +71,19 @@ function readVolumeState() {
 
 function applyTermsState() {
   const canPlay = state.acceptedTerms && Boolean(state.currentStreamUrl);
+
   if (elements.playButton) {
     elements.playButton.disabled = !canPlay;
   }
+
   if (elements.stopButton) {
     elements.stopButton.disabled = !state.isPlaying;
   }
+
   if (elements.playerAgreeButton) {
     elements.playerAgreeButton.style.display = state.acceptedTerms ? 'none' : 'inline-flex';
   }
+
   if (elements.termsGate) {
     elements.termsGate.classList.toggle('is-visible', !state.acceptedTerms);
     elements.termsGate.setAttribute('aria-hidden', state.acceptedTerms ? 'true' : 'false');
@@ -90,6 +100,7 @@ function setPlaybackUi() {
   if (elements.playButton) {
     elements.playButton.disabled = !state.acceptedTerms || !state.currentStreamUrl || state.isPlaying;
   }
+
   if (elements.stopButton) {
     elements.stopButton.disabled = !state.isPlaying;
   }
@@ -97,13 +108,17 @@ function setPlaybackUi() {
 
 function setPlayerVolume(rawValue) {
   const volume = Number(rawValue);
+
   if (Number.isNaN(volume)) {
     return;
   }
+
   state.volume = Math.min(1, Math.max(0, volume));
+
   if (elements.radioPlayer) {
     elements.radioPlayer.volume = state.volume;
   }
+
   localStorage.setItem(CONFIG.volumeKey, String(state.volume));
 }
 
@@ -121,6 +136,7 @@ async function playStream() {
     if (!elements.radioPlayer.src) {
       elements.radioPlayer.src = state.currentStreamUrl;
     }
+
     elements.radioPlayer.volume = state.volume;
     await elements.radioPlayer.play();
     state.isPlaying = true;
@@ -158,7 +174,6 @@ function getStatusText(np) {
 
   return 'Station offline';
 }
-
 
 function normalizePossibleUrl(value) {
   if (!value || typeof value !== 'string') {
@@ -212,6 +227,7 @@ function updateNowPlayingUi(np) {
     elements.playerArt.src = art;
     elements.playerArt.alt = `${title} artwork`;
   }
+
   if (elements.playerStatus) elements.playerStatus.textContent = statusText;
   if (elements.playerListeners) elements.playerListeners.textContent = totalListeners;
   if (elements.playerUnique) elements.playerUnique.textContent = uniqueListeners;
@@ -230,6 +246,7 @@ function updateNowPlayingUi(np) {
   if (elements.scheduleStatus) elements.scheduleStatus.textContent = statusText;
   if (elements.scheduleListeners) elements.scheduleListeners.textContent = totalListeners;
   if (elements.scheduleNowTitle) elements.scheduleNowTitle.textContent = title;
+
   if (elements.scheduleNowMeta) {
     elements.scheduleNowMeta.textContent = isLive
       ? streamerName
@@ -241,6 +258,7 @@ function updateNowPlayingUi(np) {
   }
 
   const playingNext = np?.playing_next?.song;
+
   if (elements.scheduleNextTitle && elements.scheduleNextMeta) {
     if (playingNext?.title || playingNext?.artist) {
       elements.scheduleNextTitle.textContent = playingNext.title || 'Coming up next';
@@ -252,6 +270,7 @@ function updateNowPlayingUi(np) {
   }
 
   const history = Array.isArray(np?.song_history) ? np.song_history.slice(0, 4) : [];
+
   if (elements.recentTracks) {
     if (!history.length) {
       elements.recentTracks.innerHTML = '<li>Recent track history will show here when available.</li>';
@@ -268,6 +287,7 @@ function updateNowPlayingUi(np) {
   }
 
   const listenUrl = normalizePossibleUrl(np?.station?.listen_url);
+
   if (listenUrl) {
     state.currentStreamUrl = listenUrl;
   }
@@ -278,6 +298,7 @@ function updateNowPlayingUi(np) {
 async function fetchNowPlaying() {
   try {
     const response = await fetch(`${CONFIG.nowPlayingUrl}?t=${Date.now()}`, { cache: 'no-store' });
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
     }
@@ -286,10 +307,12 @@ async function fetchNowPlaying() {
     updateNowPlayingUi(nowPlaying);
   } catch (error) {
     console.error('Could not load now playing data:', error);
+
     if (elements.playerStatus) elements.playerStatus.textContent = 'Station info unavailable';
     if (elements.playerSource) elements.playerSource.textContent = 'Feed unavailable';
     if (elements.heroStatus) elements.heroStatus.textContent = 'Could not reach station feed';
     if (elements.scheduleStatus) elements.scheduleStatus.textContent = 'Feed temporarily unavailable';
+
     setPlaybackUi();
   } finally {
     window.clearTimeout(state.pollTimer);
@@ -320,8 +343,10 @@ function init() {
   elements.playerAgreeButton?.addEventListener('click', () => {
     elements.termsGate?.classList.add('is-visible');
   });
+
   elements.playButton?.addEventListener('click', playStream);
   elements.stopButton?.addEventListener('click', stopStream);
+
   elements.volumeSlider?.addEventListener('input', (event) => {
     setPlayerVolume(event.target.value);
   });
