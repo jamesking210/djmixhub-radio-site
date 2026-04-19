@@ -1,1211 +1,810 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DJMixHub — Free DJ Mix Radio</title>
-  <meta
-    name="description"
-    content="DJMixHub is a free internet radio station built for fun, real DJ mixes, and discovering DJs from around the world."
-  />
-  <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
-  <style>
-    :root {
-      --bg: #0b0d12;
-      --bg-soft: #11141b;
-      --panel: #151922;
-      --panel-2: #1a2030;
-      --line: rgba(255, 255, 255, 0.08);
-      --text: #eef2f7;
-      --muted: #aab4c5;
-      --muted-2: #8893a7;
-      --accent: #66d9ff;
-      --accent-2: #8f7cff;
-      --good: #7dffb3;
-      --danger: #ff7e7e;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-      --radius-xl: 24px;
-      --radius-lg: 18px;
-      --radius-md: 14px;
-      --container: 1180px;
-      --player-height: 118px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 16px;
-      line-height: 1.6;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(102, 217, 255, 0.08), transparent 26%),
-        radial-gradient(circle at top right, rgba(143, 124, 255, 0.10), transparent 24%),
-        linear-gradient(180deg, #090b10 0%, #0c1017 100%);
-      padding-bottom: calc(var(--player-height) + 28px);
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .container {
-      width: min(var(--container), calc(100% - 32px));
-      margin: 0 auto;
-    }
-
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      backdrop-filter: blur(14px);
-      background: rgba(10, 12, 18, 0.76);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .nav-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      min-height: 72px;
-    }
-
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
-
-    .brand img {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      object-fit: cover;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
-    }
-
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    .brand-text strong {
-      font-size: 1rem;
-      line-height: 1.15;
-      letter-spacing: 0.02em;
-    }
-
-    .brand-text span {
-      font-size: 0.82rem;
-      color: var(--muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .nav-links a {
-      color: var(--muted);
-      font-size: 0.95rem;
-      padding: 10px 14px;
-      border-radius: 999px;
-      transition: 0.2s ease;
-    }
-
-    .nav-links a:hover {
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .hero {
-      padding: 56px 0 28px;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 24px;
-      align-items: stretch;
-    }
-
-    .hero-copy,
-    .hero-panel,
-    .section-panel,
-    .about-card,
-    .dj-card,
-    .schedule-card,
-    .terms-card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
-    }
-
-    .hero-copy {
-      border-radius: 28px;
-      padding: 34px;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 0.82rem;
-      letter-spacing: 0.02em;
-      margin-bottom: 16px;
-    }
-
-    .live-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: var(--good);
-      box-shadow: 0 0 0 6px rgba(125, 255, 179, 0.12);
-    }
-
-    h1, h2, h3 {
-      margin: 0 0 12px;
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-    }
-
-    h1 {
-      font-size: clamp(2rem, 4vw, 3.35rem);
-      max-width: 12ch;
-    }
-
-    h2 {
-      font-size: clamp(1.45rem, 2.4vw, 2rem);
-    }
-
-    h3 {
-      font-size: 1.08rem;
-    }
-
-    .hero-copy p {
-      margin: 0 0 20px;
-      font-size: 1rem;
-      color: var(--muted);
-      max-width: 62ch;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 22px;
-    }
-
-    .button,
-    button {
-      appearance: none;
-      border: 0;
-      cursor: pointer;
-      border-radius: 999px;
-      font: inherit;
-      transition: transform 0.16s ease, opacity 0.16s ease, background 0.16s ease;
-    }
-
-    .button:hover,
-    button:hover {
-      transform: translateY(-1px);
-    }
-
-    .button-primary {
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      color: #071018;
-      font-weight: 700;
-      padding: 12px 18px;
-    }
-
-    .button-secondary {
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text);
-      border: 1px solid var(--line);
-      padding: 12px 18px;
-    }
-
-    .hero-stats {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .stat {
-      padding: 14px 14px 12px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--line);
-    }
-
-    .stat-label {
-      display: block;
-      font-size: 0.78rem;
-      color: var(--muted-2);
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .hero-panel {
-      border-radius: 28px;
-      padding: 28px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 18px;
-    }
-
-    .hero-panel-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      background: rgba(102, 217, 255, 0.10);
-      color: #d9f7ff;
-      font-size: 0.84rem;
-    }
-
-    .mini-logo {
-      width: 62px;
-      height: 62px;
-      border-radius: 16px;
-      object-fit: cover;
-      border: 1px solid var(--line);
-    }
-
-    .hero-track {
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      padding: 18px 0;
-    }
-
-    .hero-track h3 {
-      margin-bottom: 4px;
-      font-size: 1.18rem;
-    }
-
-    .hero-track p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .hero-note {
-      font-size: 0.95rem;
-      color: var(--muted);
-      margin: 0;
-    }
-
-    section {
-      padding: 26px 0;
-    }
-
-    .section-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: end;
-      gap: 16px;
-      margin-bottom: 18px;
-    }
-
-    .section-head p {
-      margin: 0;
-      max-width: 64ch;
-      color: var(--muted);
-    }
-
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 18px;
-    }
-
-    .about-card,
-    .section-panel {
-      border-radius: 24px;
-      padding: 26px;
-    }
-
-    .about-card p,
-    .section-panel p,
-    .schedule-card p,
-    .dj-card p {
-      margin: 0 0 14px;
-      color: var(--muted);
-    }
-
-    .contact-list {
-      display: grid;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .contact-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--line);
-      color: var(--text);
-    }
-
-    .contact-item span {
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .dj-card {
-      border-radius: 22px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      min-height: 100%;
-    }
-
-    .dj-card img {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      background: #0f131b;
-    }
-
-    .dj-card-body {
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      flex: 1;
-    }
-
-    .dj-card-body h3 {
-      margin: 0;
-      font-size: 1.05rem;
-    }
-
-    .dj-sub {
-      color: var(--muted-2);
-      font-size: 0.9rem;
-      margin: 0;
-    }
-
-    .dj-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: auto;
-    }
-
-    .tag {
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 0.78rem;
-    }
-
-    .schedule-grid {
-      display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
-      gap: 18px;
-    }
-
-    .schedule-card {
-      border-radius: 24px;
-      padding: 24px;
-    }
-
-    .schedule-box {
-      padding: 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--line);
-      margin-top: 14px;
-    }
-
-    .schedule-box strong {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 1rem;
-    }
-
-    .schedule-box span {
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .recent-list {
-      list-style: none;
-      padding: 0;
-      margin: 14px 0 0;
-      display: grid;
-      gap: 10px;
-    }
-
-    .recent-list li {
-      padding: 13px 14px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 0.94rem;
-    }
-
-    .recent-list strong {
-      color: var(--text);
-      font-weight: 700;
-    }
-
-    .site-footer {
-      padding: 24px 0 8px;
-    }
-
-    .footer-panel {
-      border-top: 1px solid var(--line);
-      padding-top: 16px;
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
-    .bottom-player {
-      position: fixed;
-      left: 12px;
-      right: 12px;
-      bottom: 12px;
-      z-index: 40;
-      border-radius: 24px;
-      background: rgba(12, 15, 22, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.10);
-      backdrop-filter: blur(18px);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-      min-height: var(--player-height);
-    }
-
-    .player-inner {
-      display: grid;
-      grid-template-columns: auto minmax(0, 1.3fr) minmax(260px, 0.9fr) auto;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 16px;
-    }
-
-    .player-art {
-      width: 70px;
-      height: 70px;
-      border-radius: 16px;
-      object-fit: cover;
-      border: 1px solid var(--line);
-      background: #10141c;
-      flex-shrink: 0;
-    }
-
-    .player-main {
-      min-width: 0;
-    }
-
-    .player-meta-top {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 6px;
-      color: var(--muted);
-      font-size: 0.84rem;
-    }
-
-    .player-track {
-      min-width: 0;
-    }
-
-    .player-track strong,
-    .player-track span {
-      display: block;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .player-track strong {
-      font-size: 1rem;
-      color: var(--text);
-    }
-
-    .player-track span {
-      font-size: 0.92rem;
-      color: var(--muted);
-    }
-
-    .player-analytics {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      min-width: 0;
-    }
-
-    .player-analytics .stat {
-      padding: 12px;
-      border-radius: 14px;
-      min-width: 0;
-    }
-
-    .player-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .player-controls button {
-      padding: 10px 14px;
-      font-weight: 700;
-    }
-
-    .control-play {
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      color: #071018;
-    }
-
-    .control-stop {
-      background: rgba(255,255,255,0.05);
-      color: var(--text);
-      border: 1px solid var(--line);
-    }
-
-    .control-agree {
-      background: rgba(255,255,255,0.05);
-      color: var(--text);
-      border: 1px solid var(--line);
-    }
-
-    .volume-wrap {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 0.88rem;
-    }
-
-    input[type="range"] {
-      width: 110px;
-      accent-color: var(--accent);
-    }
-
-    .terms-gate {
-      position: fixed;
-      inset: 0;
-      z-index: 60;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: rgba(2, 4, 8, 0.72);
-      backdrop-filter: blur(10px);
-    }
-
-    .terms-gate.is-visible {
-      display: flex;
-    }
-
-    .terms-card {
-      width: min(560px, 100%);
-      border-radius: 24px;
-      padding: 28px;
-      background: #10141d;
-    }
-
-    .terms-card p {
-      margin: 0 0 14px;
-      color: var(--muted);
-      font-size: 0.96rem;
-    }
-
-    .terms-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    @media (max-width: 1120px) {
-      .cards-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DJMixHub | Free Internet Radio</title>
+    <meta
+      name="description"
+      content="DJMixHub is a free internet radio station featuring DJ mixes from around the world. Listen live, meet the DJs, and connect with the station."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
+    <link rel="stylesheet" href="styles.css" />
+
+    <style>
+      :root {
+        --page-max: 1180px;
+        --card-radius: 22px;
       }
 
-      .player-inner {
-        grid-template-columns: auto minmax(0, 1fr);
+      html {
+        scroll-behavior: smooth;
       }
 
-      .player-analytics,
-      .player-controls {
-        grid-column: 2 / -1;
-      }
-
-      .player-controls {
-        justify-content: flex-start;
-      }
-    }
-
-    @media (max-width: 900px) {
-      .hero-grid,
-      .about-grid,
-      .schedule-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .cards-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .nav-wrap {
-        min-height: auto;
-        padding: 12px 0;
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .nav-links {
-        justify-content: flex-start;
-      }
-    }
-
-    @media (max-width: 640px) {
       body {
-        font-size: 15px;
-        padding-bottom: 190px;
+        font-size: 16px;
+        line-height: 1.55;
       }
 
       .container {
-        width: min(100% - 20px, var(--container));
+        width: min(var(--page-max), calc(100% - 28px));
+        margin-inline: auto;
       }
 
-      .hero {
-        padding-top: 28px;
+      h1 {
+        font-size: clamp(2rem, 4.5vw, 3.5rem) !important;
+        line-height: 1.08 !important;
+        letter-spacing: -0.03em;
       }
 
-      .hero-copy,
-      .hero-panel,
-      .about-card,
-      .section-panel,
-      .schedule-card,
-      .terms-card {
-        padding: 20px;
-        border-radius: 20px;
+      h2 {
+        font-size: clamp(1.6rem, 3vw, 2.4rem) !important;
+        line-height: 1.12 !important;
       }
 
-      .cards-grid,
-      .hero-stats,
-      .player-analytics {
-        grid-template-columns: 1fr;
+      h3 {
+        font-size: clamp(1.05rem, 2vw, 1.3rem) !important;
+        line-height: 1.2 !important;
       }
 
-      .player-inner {
-        grid-template-columns: 1fr;
-        align-items: stretch;
+      p,
+      li,
+      a,
+      span,
+      strong,
+      button {
+        font-size: clamp(0.95rem, 1.1vw, 1rem);
       }
 
-      .player-art {
-        width: 62px;
-        height: 62px;
+      .section {
+        padding: 72px 0;
       }
 
-      .player-main {
+      .hero.section {
+        padding-top: 56px;
+        padding-bottom: 56px;
+      }
+
+      .hero__grid,
+      .section__grid,
+      .schedule-layout,
+      .build-layout {
         display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 12px;
-        align-items: center;
+        gap: 22px;
+        align-items: start;
       }
 
-      .player-main > div:last-child {
+      .hero__grid {
+        grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      }
+
+      .section__grid,
+      .schedule-layout,
+      .build-layout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero__copy,
+      .hero__panel,
+      .connect-card,
+      .schedule-board,
+      .build-card,
+      .dj-card {
         min-width: 0;
       }
 
-      .player-controls {
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .hero__lede,
+      .hero__microcopy,
+      .section-heading p,
+      .connect-card p,
+      .schedule-layout p,
+      .build-card p {
+        max-width: 62ch;
+      }
+
+      .hero__actions,
+      .about-links,
+      .build-links,
+      .site-footer__inner > div {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .hero__highlights {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 14px;
+        padding: 0;
+        margin: 18px 0 0;
+        list-style: none;
+      }
+
+      .hero__highlights li {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .hero__panel,
+      .connect-card,
+      .schedule-board,
+      .build-card,
+      .dj-card {
+        border-radius: var(--card-radius) !important;
+      }
+
+      .hero__meta-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .section-heading {
+        margin-bottom: 26px;
+        max-width: 760px;
+      }
+
+      .build-layout {
+        margin-top: 8px;
+      }
+
+      .build-card {
+        padding: 26px;
+      }
+
+      .build-card__list {
+        display: grid;
+        gap: 12px;
+        margin: 18px 0 0;
+      }
+
+      .build-item {
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .build-item strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .dj-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .dj-card {
+        display: flex;
         flex-direction: column;
-        align-items: stretch;
+        height: 100%;
       }
 
-      .player-controls button,
-      .volume-wrap {
+      .dj-card__media img {
         width: 100%;
-        justify-content: center;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        display: block;
       }
 
-      input[type="range"] {
-        width: 100%;
+      .dj-card__media--open img {
+        object-fit: contain;
+        padding: 28px;
+        background: rgba(255, 255, 255, 0.02);
       }
 
-      .footer-panel {
-        flex-direction: column;
+      .dj-card__header {
+        display: grid;
+        gap: 6px;
       }
-    }
-  </style>
-</head>
-<body>
-  <header class="site-header">
-    <div class="container nav-wrap">
-      <a class="brand" href="#top" aria-label="DJMixHub home">
-        <img src="assets/logo.jpg" alt="DJMixHub logo" />
-        <div class="brand-text">
-          <strong>DJMixHub</strong>
-          <span>Free internet radio for real DJ mixes</span>
+
+      .dj-card p,
+      .dj-card a,
+      .dj-card ul {
+        margin-top: 0;
+      }
+
+      .dj-card__list {
+        padding-left: 18px;
+        margin-bottom: 16px;
+      }
+
+      .schedule-board__row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .recent-tracks {
+        display: grid;
+        gap: 10px;
+        padding-left: 18px;
+      }
+
+      .site-header__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        min-height: 76px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .brand__logo {
+        width: 42px;
+        height: 42px;
+        object-fit: cover;
+        border-radius: 12px;
+      }
+
+      .site-nav {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .site-nav a {
+        padding: 10px 12px;
+        border-radius: 999px;
+      }
+
+      .bottom-player {
+        padding: 14px 16px !important;
+      }
+
+      .bottom-player__art {
+        width: 70px !important;
+        height: 70px !important;
+        object-fit: cover;
+        border-radius: 14px;
+      }
+
+      .bottom-player__status-line {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+
+      .player-metrics {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .bottom-player__controls {
+        display: grid;
+        gap: 10px;
+      }
+
+      .player-button-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .volume-control {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .volume-control input[type="range"] {
+        min-width: 140px;
+      }
+
+      .terms-gate__card {
+        max-width: 620px;
+        width: calc(100% - 24px);
+      }
+
+      .site-footer__inner {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      @media (max-width: 1024px) {
+        .hero__grid,
+        .section__grid,
+        .schedule-layout,
+        .build-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .dj-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .bottom-player__status-line {
+          align-items: flex-start;
+        }
+      }
+
+      @media (max-width: 720px) {
+        body {
+          font-size: 15px;
+        }
+
+        .section {
+          padding: 56px 0;
+        }
+
+        .hero.section {
+          padding-top: 34px;
+          padding-bottom: 42px;
+        }
+
+        .site-header__inner {
+          min-height: auto;
+          padding: 12px 0;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .site-nav {
+          width: 100%;
+        }
+
+        .site-nav a {
+          flex: 1 1 auto;
+          text-align: center;
+        }
+
+        .hero__meta-grid,
+        .schedule-board__row {
+          grid-template-columns: 1fr;
+        }
+
+        .dj-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .player-metrics,
+        .player-button-row,
+        .volume-control,
+        .hero__actions,
+        .about-links,
+        .build-links {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .button,
+        .player-button,
+        .button--small,
+        .volume-control input[type="range"] {
+          width: 100%;
+        }
+
+        .bottom-player__controls {
+          margin-top: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="terms-gate" id="termsGate" aria-hidden="true">
+      <div class="terms-gate__card">
+        <span class="eyebrow">Before you listen</span>
+        <h2>Agree to the listener terms to start the station</h2>
+        <p>
+          DJMixHub uses basic listener analytics like IP address, rough location and browser/device details to help keep the
+          station running, understand where people are tuning in from and improve stream reliability.
+        </p>
+        <div class="terms-gate__actions">
+          <a class="button button--ghost" href="terms.html">Read terms</a>
+          <button class="button button--primary" id="acceptTermsButton">I Agree &amp; Start Listening</button>
         </div>
-      </a>
-
-      <nav class="nav-links" aria-label="Main navigation">
-        <a href="#about">About</a>
-        <a href="#djs">DJs</a>
-        <a href="#schedule">Schedule</a>
-        <a href="terms.html">Terms</a>
-      </nav>
+      </div>
     </div>
-  </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <div class="eyebrow">
-            <span class="live-dot"></span>
-            Always free • open source roots • built for fun
-          </div>
-
-          <h1>Real DJ mixes. Good people. No paywall.</h1>
-
-          <p>
-            DJMixHub is a free online radio station built by Jimbo to feature DJs from all over
-            the world and the different styles they bring to the mix. It is simple on purpose:
-            good mixes, easy listening, and a station that feels like it was made by real people.
-          </p>
-
-          <div class="hero-actions">
-            <button id="heroListenButton" class="button button-primary" type="button">Listen now</button>
-            <a class="button button-secondary" href="#djs">Meet the DJs</a>
-          </div>
-
-          <div class="hero-stats">
-            <div class="stat">
-              <span class="stat-label">Station status</span>
-              <strong id="heroStatus">Loading station status…</strong>
-            </div>
-            <div class="stat">
-              <span class="stat-label">Now playing</span>
-              <strong id="heroTrack">Checking the feed…</strong>
-            </div>
-            <div class="stat">
-              <span class="stat-label">Artist / Source</span>
-              <strong id="heroArtist">Please wait…</strong>
-            </div>
-            <div class="stat">
-              <span class="stat-label">Listeners</span>
-              <strong><span id="heroListeners">0</span> • <span id="heroMode">DJMixHub</span></strong>
-            </div>
-          </div>
-        </div>
-
-        <aside class="hero-panel">
-          <div class="hero-panel-top">
-            <div class="status-pill">
-              <span class="live-dot"></span>
-              <span id="playerStatus">Loading station info…</span>
-            </div>
-            <img class="mini-logo" src="assets/logo.jpg" alt="DJMixHub logo" />
-          </div>
-
-          <div class="hero-track">
-            <h3>What this station is about</h3>
-            <p>
-              Free DJ mixes, open internet radio energy, and a place for DJs to get heard.
-              If you have mixes and want in, we want to hear from you.
-            </p>
-          </div>
-
-          <p class="hero-note">
-            The player stays with you at the bottom of the page while you scroll. Agree once,
-            hit play, and let it ride.
-          </p>
-        </aside>
-      </div>
-    </section>
-
-    <section id="about">
-      <div class="container">
-        <div class="section-head">
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="brand" href="#top" aria-label="DJMixHub home">
+          <img
+            src="assets/logo.jpg"
+            alt="DJMixHub"
+            class="brand__logo"
+            onerror="this.onerror=null;this.src='assets/logo.jpg';"
+          />
           <div>
-            <h2>About DJMixHub</h2>
-            <p>
-              A simple station with real personality. No corporate vibe. No bloated app.
-              Just a good-looking place to listen and discover DJ mixes.
-            </p>
+            <strong>DJMixHub</strong>
+            <span>Open Source Energy. Community Sourced Mixes.</span>
           </div>
-        </div>
-
-        <div class="about-grid">
-          <div class="about-card">
-            <p>
-              This is an always free radio station. Jimbo created DJMixHub for fun as a free way
-              to feature DJs from all around the world and the different music and mixing styles
-              they bring.
-            </p>
-            <p>
-              The station runs on Docker and AzuraCast, with a lightweight front-end made to feel
-              like a real internet radio page instead of a dashboard.
-            </p>
-            <p>
-              It is built to stay easy to maintain, easy to host on GitHub, and easy to grow over
-              time as more DJs and mixes get added.
-            </p>
-          </div>
-
-          <div class="section-panel">
-            <h3>Want to connect?</h3>
-            <p>
-              We are actively looking for new DJs to join the station and submit mixes. If you have
-              a sound, a style, and a reason people should hear your set, send it over.
-            </p>
-
-            <div class="contact-list">
-              <a class="contact-item" href="mailto:jimbo@djmixhub.com">
-                <strong>Email</strong>
-                <span>jimbo@djmixhub.com</span>
-              </a>
-
-              <a class="contact-item" href="https://github.com/jamesking210/djmixhub-radio-site" target="_blank" rel="noreferrer">
-                <strong>GitHub project</strong>
-                <span>djmixhub-radio-site</span>
-              </a>
-
-              <div class="contact-item">
-                <strong>Built with</strong>
-                <span>Docker + AzuraCast + static HTML/CSS/JS</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="#about">About</a>
+          <a href="#djs">DJs</a>
+          <a href="#schedule">Schedule</a>
+        </nav>
       </div>
-    </section>
+    </header>
 
-    <section id="djs">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <h2>DJs on DJMixHub</h2>
-            <p>
-              Two real DJs in the mix right now, plus open spots waiting for the next people who
-              want to be part of the station.
+    <main id="top">
+      <section class="hero section">
+        <div class="container hero__grid">
+          <div class="hero__copy">
+            <span class="eyebrow">Open Source Energy. Community Sourced Mixes.</span>
+            <h1>A free station for people who still care about the mix.</h1>
+            <p class="hero__lede">
+              DJMixHub is a fun internet radio project built by Jimbo to give DJs a place to be heard. It is free to listen to,
+              simple on purpose, and built around real mixes from different people with different styles.
             </p>
-          </div>
-        </div>
-
-        <div class="cards-grid">
-          <article class="dj-card">
-            <img
-              src="assets/JimboSliceChicago.png"
-              alt="JimboSliceChicago"
-              onerror="this.onerror=null;this.src='assets/logo.jpg';"
-            />
-            <div class="dj-card-body">
-              <h3>JimboSliceChicago</h3>
-              <p class="dj-sub">Chicagoland</p>
-              <p>
-                Mixes on his free time, loves tech, DIY projects, and putting together fun stuff
-                that actually works. Cubs and Bears fan. Built DJMixHub for the love of it.
-              </p>
-              <div class="dj-tags">
-                <span class="tag">Free station energy</span>
-                <span class="tag">Tech nerd</span>
-                <span class="tag">DIYer</span>
-                <a class="tag" href="https://twitch.tv/jimboslicechicago" target="_blank" rel="noreferrer">Twitch</a>
-              </div>
+            <div class="hero__actions">
+              <button class="button button--primary" id="heroListenButton">Start listening</button>
+              <a class="button button--ghost" href="#djs">Meet the DJs</a>
             </div>
-          </article>
-
-          <article class="dj-card">
-            <img
-              src="assets/ChuckTheDJCA.png"
-              alt="ChuckTheDJCA"
-              onerror="this.onerror=null;this.src='assets/logo.jpg';"
-            />
-            <div class="dj-card-body">
-              <h3>ChuckTheDJCA</h3>
-              <p class="dj-sub">Northern California</p>
-              <p>
-                Professional event DJ focused on sound systems, lighting, and real-world DJ work.
-                Weddings, corporate events, private parties, and the kind of experience that only
-                comes from doing it for real.
-              </p>
-              <div class="dj-tags">
-                <span class="tag">Event DJ</span>
-                <span class="tag">Sound systems</span>
-                <span class="tag">Lighting</span>
-                <a class="tag" href="https://twitch.tv/chuckthedjca" target="_blank" rel="noreferrer">Twitch</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="dj-card">
-            <img
-              src="assets/logo.jpg"
-              alt="This could be you"
-            />
-            <div class="dj-card-body">
-              <h3>This could be you</h3>
-              <p class="dj-sub">Open DJ spot</p>
-              <p>
-                Got mixes ready to go? This spot is open for a DJ with personality, good taste,
-                and something worth sharing on the station.
-              </p>
-              <div class="dj-tags">
-                <span class="tag">Accepting mixes</span>
-                <span class="tag">Open position</span>
-                <span class="tag">Join DJMixHub</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="dj-card">
-            <img
-              src="assets/logo.jpg"
-              alt="This could be you"
-            />
-            <div class="dj-card-body">
-              <h3>This could be you</h3>
-              <p class="dj-sub">Open DJ spot</p>
-              <p>
-                House, open format, throwbacks, club edits, chill sets, late-night vibes — if you
-                have a sound and you care about your mix, let’s talk.
-              </p>
-              <div class="dj-tags">
-                <span class="tag">All styles welcome</span>
-                <span class="tag">Submit a mix</span>
-                <span class="tag">Worldwide DJs</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="dj-card">
-            <img
-              src="assets/logo.jpg"
-              alt="This could be you"
-            />
-            <div class="dj-card-body">
-              <h3>This could be you</h3>
-              <p class="dj-sub">Open DJ spot</p>
-              <p>
-                We are building this station the fun way: one real DJ at a time. Bring your vibe,
-                your style, and a mix that makes people want to keep listening.
-              </p>
-              <div class="dj-tags">
-                <span class="tag">Growing station</span>
-                <span class="tag">Real people</span>
-                <span class="tag">Fun project</span>
-              </div>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="schedule">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <h2>Schedule</h2>
-            <p>
-              This area is built to look good now and still make sense later when you plug in a
-              fuller AzuraCast schedule. For now, it stays useful with what the station feed gives us.
-            </p>
-          </div>
-        </div>
-
-        <div class="schedule-grid">
-          <div class="schedule-card">
-            <h3>On air right now</h3>
-            <p id="scheduleStatus">Loading current station info…</p>
-
-            <div class="schedule-box">
-              <strong id="scheduleNowTitle">Checking current track…</strong>
-              <span id="scheduleNowMeta">Waiting for now-playing data.</span>
-            </div>
-
-            <div class="schedule-box">
-              <strong id="scheduleNextTitle">Coming up next</strong>
-              <span id="scheduleNextMeta">Future schedule and show blocks can plug in here later.</span>
-            </div>
-
-            <div class="schedule-box">
-              <strong>Listener count</strong>
-              <span><span id="scheduleListeners">0</span> listening right now</span>
-            </div>
-          </div>
-
-          <div class="schedule-card">
-            <h3>Recent tracks</h3>
-            <p>
-              This gives the page some life even before a full live show schedule is in place.
-            </p>
-            <ul id="recentTracks" class="recent-list">
-              <li>Recent track history will show here when available.</li>
+            <ul class="hero__highlights" aria-label="Station highlights">
+              <li>Always free to listen</li>
+              <li>Docker + AzuraCast powered</li>
+              <li>New DJs and mixes welcome</li>
             </ul>
           </div>
+
+          <aside class="hero__panel card">
+            <div class="hero__panel-top">
+              <span class="live-dot"></span>
+              <span id="heroStatus">Checking DJMixHub...</span>
+            </div>
+            <div class="hero__song">
+              <p class="hero__label">Now playing</p>
+              <h2 id="heroTrack">DJMixHub is warming up...</h2>
+              <p id="heroArtist">Pulling the station feed</p>
+            </div>
+            <div class="hero__meta-grid">
+              <div>
+                <span class="meta-label">Listeners</span>
+                <strong id="heroListeners">--</strong>
+              </div>
+              <div>
+                <span class="meta-label">Source</span>
+                <strong id="heroMode">DJMixHub</strong>
+              </div>
+            </div>
+            <p class="hero__microcopy">
+              Scroll around, read about the station and check out the DJs. The player stays pinned at the bottom on this page.
+            </p>
+          </aside>
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
 
-  <footer class="site-footer">
-    <div class="container footer-panel">
-      <div>© DJMixHub — free internet radio built for fun.</div>
-      <div class="footer-links">
-        <a href="#about">About</a>
-        <a href="#djs">DJs</a>
-        <a href="#schedule">Schedule</a>
-        <a href="terms.html">Terms &amp; Conditions</a>
-        <a href="mailto:jimbo@djmixhub.com">Contact</a>
-      </div>
-    </div>
-  </footer>
-
-  <div id="termsGate" class="terms-gate" aria-hidden="true">
-    <div class="terms-card">
-      <h3>Before you listen</h3>
-      <p>
-        By starting the player, you agree to the DJMixHub terms and conditions, including standard
-        use policies and basic technical logging such as IP address and rough location used to run
-        and protect the service.
-      </p>
-      <p>
-        We do not sell your data. Full details are on the terms page.
-      </p>
-      <div class="terms-actions">
-        <button id="acceptTermsButton" class="button button-primary" type="button">Agree &amp; listen</button>
-        <a class="button button-secondary" href="terms.html">Read full terms</a>
-      </div>
-    </div>
-  </div>
-
-  <div id="bottomPlayer" class="bottom-player">
-    <div class="player-inner">
-      <audio id="radioPlayer" preload="none"></audio>
-
-      <img
-        id="playerArt"
-        class="player-art"
-        src="assets/logo.jpg"
-        alt="DJMixHub artwork"
-        onerror="this.onerror=null;this.src='assets/logo.jpg';"
-      />
-
-      <div class="player-main">
-        <div></div>
-        <div class="player-track">
-          <div class="player-meta-top">
-            <span id="playerSource">DJMixHub station mix</span>
-            <span>•</span>
-            <span id="playerStatus">Loading station info…</span>
+      <section id="about" class="section">
+        <div class="container section__grid">
+          <div>
+            <span class="eyebrow">About DJMixHub</span>
+            <h2>Built for fun, kept simple, made to sound alive.</h2>
+            <p>
+              DJMixHub is an always free radio station. Jimbo built it as a fun way to feature DJs from all around the world and
+              give different mixing styles a home in one place.
+            </p>
+            <p>
+              The whole point is to keep it real and keep it easy: good mixes, a clean site, no bloated nonsense, and an open door
+              for new people who want to contribute. It runs on Docker and AzuraCast, and the site itself is easy to keep updated
+              on GitHub.
+            </p>
+            <div class="about-links">
+              <a href="https://github.com/jamesking210/djmixhub-radio-site" target="_blank" rel="noreferrer">View the site GitHub</a>
+              <a href="https://radio.djmixhub.com" target="_blank" rel="noreferrer">Open the live station</a>
+            </div>
           </div>
-          <strong id="playerTitle">Loading current track…</strong>
-          <span id="playerArtist">Please wait…</span>
+
+          <aside class="card connect-card">
+            <span class="eyebrow">Want to connect?</span>
+            <h3>We are actively looking for new DJs and fresh mix submissions.</h3>
+            <p>
+              If you have a sound, a style or a mix worth hearing, reach out. DJMixHub is open to DJs who want to join the station
+              and help keep it interesting.
+            </p>
+            <a class="connect-card__email" href="mailto:jimbo@djmixhub.com">jimbo@djmixhub.com</a>
+          </aside>
+        </div>
+      </section>
+
+      <section id="build" class="section section--alt">
+        <div class="container">
+          <div class="section-heading">
+            <span class="eyebrow">How it’s made</span>
+            <h2>Simple stack. Clean setup. Easy to keep alive.</h2>
+            <p>
+              DJMixHub is built to stay lightweight and practical. The station runs on AzuraCast, the site lives as a simple static
+              front end, and everything is set up so updates are easy to push through GitHub.
+            </p>
+          </div>
+
+          <div class="build-layout">
+            <article class="card build-card">
+              <h3>The stack</h3>
+              <div class="build-card__list">
+                <div class="build-item">
+                  <strong>AzuraCast</strong>
+                  <span>Handles the radio station, streaming, metadata, listener stats, and now-playing feed.</span>
+                </div>
+                <div class="build-item">
+                  <strong>Static site</strong>
+                  <span>Simple HTML, CSS, and JavaScript so the page stays fast and easy to edit.</span>
+                </div>
+                <div class="build-item">
+                  <strong>Docker</strong>
+                  <span>Keeps deployment easy on the same machine as the station.</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="card build-card">
+              <h3>GitHub and project links</h3>
+              <p>
+                Everything is meant to be easy to understand and easy to maintain. These are the main project links behind the site.
+              </p>
+              <div class="build-links">
+                <a class="button button--ghost" href="https://github.com/AzuraCast/AzuraCast" target="_blank" rel="noreferrer">
+                  AzuraCast on GitHub
+                </a>
+                <a class="button button--ghost" href="https://github.com/jamesking210/djmixhub-radio-site" target="_blank" rel="noreferrer">
+                  DJMixHub site on GitHub
+                </a>
+                <a class="button button--ghost" href="https://radio.djmixhub.com" target="_blank" rel="noreferrer">
+                  Live station
+                </a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="djs" class="section section--alt">
+        <div class="container">
+          <div class="section-heading">
+            <span class="eyebrow">Featured DJs</span>
+            <h2>The people behind the station</h2>
+            <p>
+              Different backgrounds, different styles, same idea: bring real DJ mixes to a station that feels personal.
+            </p>
+          </div>
+
+          <div class="dj-grid">
+            <article class="card dj-card">
+              <div class="dj-card__media">
+                <img
+                  src="assets/JimboSliceChicago.png"
+                  alt="JimboSliceChicago"
+                  onerror="this.onerror=null;this.src='assets/logo.jpg';"
+                />
+              </div>
+              <div class="dj-card__header">
+                <span class="dj-tag">Chicagoland</span>
+                <h3>JimboSliceChicago</h3>
+              </div>
+              <ul class="dj-card__list">
+                <li>From Chicagoland</li>
+                <li>Mixes on his free time</li>
+                <li>Tech nerd</li>
+                <li>DIYer</li>
+                <li>Cubs/Bears fan</li>
+              </ul>
+              <a href="https://twitch.tv/jimboslicechicago" target="_blank" rel="noreferrer">twitch.tv/jimboslicechicago</a>
+            </article>
+
+            <article class="card dj-card">
+              <div class="dj-card__media">
+                <img
+                  src="assets/ChuckTheDJCA.png"
+                  alt="ChuckTheDJCA"
+                  onerror="this.onerror=null;this.src='assets/logo.jpg';"
+                />
+              </div>
+              <div class="dj-card__header">
+                <span class="dj-tag">Northern California</span>
+                <h3>ChuckTheDJCA</h3>
+              </div>
+              <ul class="dj-card__list">
+                <li>From Northern California</li>
+                <li>Professional event DJ</li>
+                <li>Specializes in sound systems, DJing, lighting and more</li>
+                <li>Weddings, corporate events and private parties</li>
+              </ul>
+              <a href="https://twitch.tv/chuckthedjca" target="_blank" rel="noreferrer">twitch.tv/chuckthedjca</a>
+            </article>
+
+            <article class="card dj-card dj-card--open">
+              <div class="dj-card__media dj-card__media--open">
+                <img
+                  src="assets/logo.jpg"
+                  alt="DJMixHub logo"
+                  onerror="this.onerror=null;this.src='assets/logo.jpg';"
+                />
+              </div>
+              <div class="dj-card__header">
+                <span class="dj-tag">Position open</span>
+                <h3>This could be you</h3>
+              </div>
+              <p>
+                We are accepting DJs and mixes. If you want your sound on DJMixHub, send a note and tell us what you bring to the
+                station.
+              </p>
+              <a href="mailto:jimbo@djmixhub.com?subject=DJMixHub%20DJ%20Submission">Reach out about joining the station</a>
+            </article>
+
+            <article class="card dj-card dj-card--open">
+              <div class="dj-card__media dj-card__media--open">
+                <img
+                  src="assets/logo.jpg"
+                  alt="DJMixHub logo"
+                  onerror="this.onerror=null;this.src='assets/logo.jpg';"
+                />
+              </div>
+              <div class="dj-card__header">
+                <span class="dj-tag">Position open</span>
+                <h3>This could be you</h3>
+              </div>
+              <p>
+                House, open format, throwbacks, late-night sets, party mixes, smooth mixes, wild mixes. If it hits right, we want
+                to hear it.
+              </p>
+              <a href="mailto:jimbo@djmixhub.com?subject=DJMixHub%20Mix%20Submission">Send a mix submission</a>
+            </article>
+
+            <article class="card dj-card dj-card--open">
+              <div class="dj-card__media dj-card__media--open">
+                <img
+                  src="assets/logo.jpg"
+                  alt="DJMixHub logo"
+                  onerror="this.onerror=null;this.src='assets/logo.jpg';"
+                />
+              </div>
+              <div class="dj-card__header">
+                <span class="dj-tag">Position open</span>
+                <h3>This could be you</h3>
+              </div>
+              <p>
+                We are building the station one real DJ at a time. Bring your style, your personality, and something worth putting
+                on air.
+              </p>
+              <a href="mailto:jimbo@djmixhub.com?subject=DJMixHub%20Join%20the%20Station">Ask about joining DJMixHub</a>
+            </article>
+
+            <article class="card dj-card dj-card--open">
+              <div class="dj-card__media dj-card__media--open">
+                <img
+                  src="assets/logo.jpg"
+                  alt="DJMixHub logo"
+                  onerror="this.onerror=null;this.src='assets/logo.jpg';"
+                />
+              </div>
+              <div class="dj-card__header">
+                <span class="dj-tag">Position open</span>
+                <h3>This could be you</h3>
+              </div>
+              <p>
+                Community-sourced mixes are the whole point. If you have a mix people should hear, there is room for you here.
+              </p>
+              <a href="mailto:jimbo@djmixhub.com?subject=DJMixHub%20Community%20Mixes">Tell us about your sound</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="schedule" class="section">
+        <div class="container schedule-layout">
+          <div>
+            <span class="eyebrow">Schedule</span>
+            <h2>Simple now, ready to grow later.</h2>
+            <p>
+              DJMixHub is still in the fun-building stage, so this section leans on live station data instead of pretending there is
+              a giant schedule already in place.
+            </p>
+            <p>
+              Right now it shows what is on air, what may be coming next and what just played. When the lineup gets more structured,
+              this section can expand to pull deeper AzuraCast schedule data without changing the whole site.
+            </p>
+          </div>
+
+          <div class="card schedule-board">
+            <div class="schedule-board__row">
+              <div>
+                <span class="meta-label">Station status</span>
+                <strong id="scheduleStatus">Loading...</strong>
+              </div>
+              <div>
+                <span class="meta-label">Current listeners</span>
+                <strong id="scheduleListeners">--</strong>
+              </div>
+            </div>
+
+            <div class="schedule-block">
+              <span class="schedule-block__label">On air now</span>
+              <h3 id="scheduleNowTitle">Checking the stream...</h3>
+              <p id="scheduleNowMeta">Pulling the latest DJMixHub data.</p>
+            </div>
+
+            <div class="schedule-block">
+              <span class="schedule-block__label">Up next</span>
+              <h3 id="scheduleNextTitle">Station rotation</h3>
+              <p id="scheduleNextMeta">Full scheduled show blocks can be added later.</p>
+            </div>
+
+            <div class="schedule-block">
+              <span class="schedule-block__label">Recently played</span>
+              <ul id="recentTracks" class="recent-tracks">
+                <li>Loading recent tracks...</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <p>DJMixHub — Open Source Energy. Community Sourced Mixes.</p>
+        <div>
+          <a href="terms.html">Terms &amp; Conditions</a>
+          <a href="mailto:jimbo@djmixhub.com">jimbo@djmixhub.com</a>
         </div>
       </div>
+    </footer>
 
-      <div class="player-analytics">
-        <div class="stat">
-          <span class="stat-label">Listeners</span>
-          <strong id="playerListeners">0</strong>
-        </div>
-        <div class="stat">
-          <span class="stat-label">Unique</span>
-          <strong id="playerUnique">0</strong>
-        </div>
-        <div class="stat">
-          <span class="stat-label">Mode</span>
-          <strong>DJMixHub</strong>
-        </div>
+    <div class="bottom-player" id="bottomPlayer">
+      <div class="bottom-player__art-wrap">
+        <img id="playerArt" class="bottom-player__art" src="assets/logo.jpg" alt="Current artwork" />
       </div>
 
-      <div class="player-controls">
-        <button id="playButton" class="control-play" type="button">Play</button>
-        <button id="stopButton" class="control-stop" type="button">Stop</button>
-        <button id="playerAgreeButton" class="control-agree" type="button">Agree to terms</button>
+      <div class="bottom-player__track">
+        <div class="bottom-player__status-line">
+          <span class="status-pill" id="playerStatus">Loading...</span>
+          <div class="player-metrics">
+            <span class="player-metric"><strong id="playerListeners">--</strong> listeners</span>
+            <span class="player-metric"><strong id="playerUnique">--</strong> unique</span>
+            <span class="player-metric" id="playerSource">DJMixHub</span>
+          </div>
+        </div>
+        <strong id="playerTitle">DJMixHub radio</strong>
+        <span id="playerArtist">Fetching current track info...</span>
+      </div>
 
-        <label class="volume-wrap" for="volumeSlider">
+      <div class="bottom-player__controls">
+        <div class="player-button-row">
+          <button class="player-button" id="playButton" aria-label="Play station" disabled>Play</button>
+          <button class="button button--ghost button--small" id="stopButton" aria-label="Stop station" disabled>Stop</button>
+          <button class="button button--ghost button--small" id="playerAgreeButton">Agree to listen</button>
+        </div>
+        <label class="volume-control" for="volumeSlider">
           <span>Volume</span>
           <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="1" />
         </label>
       </div>
-    </div>
-  </div>
 
-  <script src="script.js"></script>
-</body>
+      <audio id="radioPlayer" preload="none"></audio>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
 </html>
