@@ -15,7 +15,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=20260423b" />
   </head>
   <body>
     <header class="site-header">
@@ -28,14 +28,14 @@
             onerror="this.onerror=null;this.src='assets/logo.jpg';"
           />
           <div>
-            <strong>DJMixHub</strong>
+            <strong data-config-text="siteName">DJMixHub</strong>
             <span>Terms &amp; conditions</span>
           </div>
         </a>
         <nav class="site-nav" aria-label="Secondary navigation">
           <a href="index.html#about">About</a>
           <a href="index.html#djs">DJs</a>
-          <a href="index.html#schedule">Schedule</a>
+          <a href="index.html#opensource">Open Source</a>
         </nav>
       </div>
     </header>
@@ -43,7 +43,7 @@
     <main class="section">
       <div class="container terms-layout">
         <div class="section-heading section-heading--left">
-          <span class="eyebrow">DJMixHub terms</span>
+          <span class="eyebrow"><span data-config-text="siteName">DJMixHub</span> terms</span>
           <h1>Listener terms &amp; conditions</h1>
           <p>
             These terms are here to keep things clear and reasonable. By using the DJMixHub website or starting the player, you
@@ -109,7 +109,7 @@
             <h2>7. Contact</h2>
             <p>
               Questions about the station, mixes or these terms can be sent to
-              <a href="mailto:jimbo@djmixhub.com">jimbo@djmixhub.com</a>.
+              <a data-config-email>djmixhubradio@gmail.com</a>.
             </p>
           </article>
         </div>
@@ -119,5 +119,7 @@
         </div>
       </div>
     </main>
+    <script src="config.js?v=20260423b"></script>
+    <script src="script.js?v=20260423b"></script>
   </body>
 </html>

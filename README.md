@@ -1,111 +1,251 @@
 # DJMixHub Radio Site
 
-A simple, stylish, one-page static radio station website for **DJMixHub**.
+DJMIXHUB is a self-hosted radio website project built around AzuraCast and Docker.
 
-This project is intentionally lightweight:
+This repo now ships with two separate site variants:
 
-- One main `index.html`
-- One separate `terms.html`
-- Clean `styles.css`
-- Small `script.js` for the player and station data
-- Docker-ready with Nginx
-- Runs on **port 8085**
+- `djmixhub-site`: the custom player site on port `8085`
+- `djmixhub-embed-site`: the embedded AzuraCast player site on port `8087`
 
-## What it includes
+Both are static frontends served by Nginx and configured through public runtime environment variables.
 
-- Dark, modern radio-station style
-- Fixed bottom player
-- Play and stop controls
-- Current song title
-- Artist name
-- Listener count
-- Album artwork from AzuraCast
-- Terms agreement gate before listening
-- One-page navigation for About / DJs / Schedule
-- Schedule section that works now and can grow later
+## Site variants
 
-## Project structure
+### 1. Custom Player Site
 
-```text
-.
-├── assets/
-│   ├── logo.jpg
-│   ├── JimboSliceChicago.png
-│   └── ChuckTheDJCA.png
-├── index.html
-├── terms.html
-├── styles.css
-├── script.js
-├── nginx.conf
-├── Dockerfile
-├── docker-compose.yml
-└── README.md
+- service: `djmixhub-site`
+- default URL: `http://localhost:8085`
+- uses the custom sticky player in `script.js`
+
+Main files:
+
+- `index.html`
+- `styles.css`
+- `script.js`
+- `terms.html`
+- `dj-data.js`
+
+### 2. Embedded Player Site
+
+- service: `djmixhub-embed-site`
+- default URL: `http://localhost:8087`
+- uses the AzuraCast public player inside an iframe
+
+Main files:
+
+- `embedded-site/index.html`
+- `embedded-site/styles.css`
+- `embedded-site/app.js`
+- `embedded-site/terms.html`
+- `embedded-site/dj-data.js`
+
+## Project layout
+
+- `assets/`: station logo and DJ images
+- `config.js`: local fallback config for the custom player site
+- `config.template.js`: Docker-rendered runtime config for the custom player site
+- `docker-compose.yml`: runs both websites
+- `Dockerfile`: image for the custom player site
+- `embedded-site/Dockerfile`: image for the embedded-player site
+- `nginx.conf`: custom player Nginx config
+- `embedded-site/nginx.conf`: embedded-site Nginx config
+- `docker-entrypoint-generate-config.sh`: runtime config generator for the custom player site
+- `embedded-site/docker-entrypoint-generate-config.sh`: runtime config generator for the embedded site
+
+## Config pattern
+
+This project does not read `.env` directly from browser JavaScript.
+
+Instead:
+
+1. Docker reads values from `.env`
+2. each container generates a browser-safe `config.js` at startup
+3. the frontend reads that generated runtime config
+
+Only public values should go into this config. Do not place secrets in frontend-exposed variables.
+
+## Environment variables
+
+Public site config:
+
+- `PUBLIC_SITE_URL`
+- `PUBLIC_SITE_NAME`
+- `PUBLIC_SITE_TAGLINE`
+- `PUBLIC_RADIO_BASE_URL`
+- `PUBLIC_STATION_SHORTCODE`
+- `PUBLIC_STATION_NAME`
+- `PUBLIC_NOW_PLAYING_URL`
+- `PUBLIC_STREAM_URL`
+- `PUBLIC_PLAYER_URL`
+- `PUBLIC_MAIN_REPO_URL`
+- `PUBLIC_AZURACAST_REPO_URL`
+- `PUBLIC_GITHUB_URL`
+- `PUBLIC_CONTACT_EMAIL`
+
+Deployment config:
+
+- `PORT`
+- `EMBED_PORT`
+- `NODE_ENV`
+
+## Local development
+
+1. Copy the sample env file:
+
+```bash
+cp .env.example .env
 ```
 
-## Player data source
+2. Edit `.env` for your URLs, station shortcode, and contact info.
 
-The site reads station info directly from:
+3. Build and run both sites:
 
-```text
-https://radio.djmixhub.com/api/nowplaying_static/djmixhub.json
+```bash
+docker compose up -d --build
 ```
 
-The stream fallback also points directly at:
+4. Open:
 
-```text
-https://radio.djmixhub.com/listen/djmixhub/radio.mp3
+- custom player site: `http://localhost:8085`
+- embedded player site: `http://localhost:8087`
+
+## Deploy from scratch on Ubuntu
+
+These steps assume a clean Ubuntu server and a GitHub-hosted copy of this repo.
+
+### 1. Install Docker and Git
+
+```bash
+sudo apt update
+sudo apt install -y ca-certificates curl gnupg git
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+sudo usermod -aG docker $USER
+newgrp docker
 ```
 
-This keeps the site simple and avoids relying on a local metadata proxy.
-
-## Local deploy
+### 2. Clone the repo
 
 ```bash
 git clone https://github.com/jamesking210/djmixhub-radio-site.git
 cd djmixhub-radio-site
+```
+
+### 3. Create your runtime config
+
+```bash
+cp .env.example .env
+nano .env
+```
+
+Set at minimum:
+
+- `PUBLIC_SITE_URL`
+- `PUBLIC_RADIO_BASE_URL`
+- `PUBLIC_STATION_SHORTCODE`
+- `PUBLIC_NOW_PLAYING_URL`
+- `PUBLIC_PLAYER_URL`
+- `PUBLIC_CONTACT_EMAIL`
+- `PORT`
+- `EMBED_PORT`
+
+### 4. Build and start both sites
+
+```bash
 docker compose up -d --build
 ```
 
-Then open:
+### 5. Verify
 
-```text
-http://YOUR-SERVER-IP:8085
+```bash
+docker compose ps
 ```
 
-## Reverse proxy idea
+Default local ports:
 
-If you want this to live on `djmixhub.com`, point your reverse proxy at the website container on port `8085`.
+- custom player site: `8085`
+- embedded player site: `8087`
 
-Example idea:
+## Update the site after an edit
 
-- `djmixhub.com` -> this static site container on `8085`
+If you edited files locally on the server:
+
+```bash
+cd djmixhub-radio-site
+docker compose up -d --build
+```
+
+If you pushed changes to GitHub from another machine and want to update the server:
+
+```bash
+cd djmixhub-radio-site
+git pull origin main
+docker compose up -d --build
+```
+
+If you only want to rebuild one site:
+
+```bash
+docker compose up -d --build djmixhub-site
+docker compose up -d --build djmixhub-embed-site
+```
+
+## Stop or restart
+
+Stop both:
+
+```bash
+docker compose down
+```
+
+Restart both:
+
+```bash
+docker compose restart
+```
+
+## Reverse proxy notes
+
+A common setup is:
+
+- `djmixhub.com` -> custom player site or embedded site
 - `radio.djmixhub.com` -> AzuraCast
 
-## Customizing the logo
+If you want both site variants publicly accessible, give them different subdomains, for example:
 
-The current layout is wired to use these files:
+- `djmixhub.com` -> one preferred frontend
+- `embed.djmixhub.com` -> embedded-player frontend
+- `radio.djmixhub.com` -> AzuraCast
 
-```text
-assets/logo.jpg
-assets/JimboSliceChicago.png
-assets/ChuckTheDJCA.png
-```
+## Content updates
 
-Keep `assets/logo.jpg` in place so the brand image appears everywhere across the site and player.
+### Add or edit DJs
 
-## Customizing the stream URL
+Custom player site:
 
-The JavaScript uses this fallback stream URL:
+- add a square image to `assets/`
+- add a DJ object in `dj-data.js`
 
-```js
-fallbackStreamUrl: 'https://radio.djmixhub.com/listen/djmixhub/radio.mp3'
-```
+Embedded-player site:
 
-If your public listen URL is different, update it in `script.js`.
+- add a square image to `assets/`
+- add a DJ object in `embedded-site/dj-data.js`
+
+### Change public site values
+
+- update `.env`
+- rebuild the affected container with `docker compose up -d --build`
 
 ## Notes
 
-- The bottom player stays alive while moving around the one-page homepage.
-- It is expected to stop if the listener opens the separate `terms.html` page.
-- The schedule section already degrades gracefully if detailed show data is limited right now.
-- Later, you can expand the schedule section to use richer AzuraCast schedule data or your own show feed.
+- `config.js` files in the repo are safe local fallbacks
+- Docker-generated runtime config overrides them inside containers
+- the custom player site uses AzuraCast now-playing data directly
+- the embedded site uses the AzuraCast public player URL plus now-playing data for display

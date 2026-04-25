@@ -2,8 +2,51 @@ services:
   djmixhub-site:
     build: .
     container_name: djmixhub-site
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-https://djmixhub.com}
+      PUBLIC_SITE_NAME: ${PUBLIC_SITE_NAME:-DJMIXHUB}
+      PUBLIC_SITE_TAGLINE: ${PUBLIC_SITE_TAGLINE:-Open Source Energy. Community Sourced Mixes.}
+      PUBLIC_RADIO_BASE_URL: ${PUBLIC_RADIO_BASE_URL:-https://radio.djmixhub.com}
+      PUBLIC_STATION_SHORTCODE: ${PUBLIC_STATION_SHORTCODE:-djmixhub}
+      PUBLIC_STATION_NAME: ${PUBLIC_STATION_NAME:-DJMIXHUB}
+      PUBLIC_NOW_PLAYING_URL: ${PUBLIC_NOW_PLAYING_URL:-https://radio.djmixhub.com/api/nowplaying/djmixhub}
+      PUBLIC_STREAM_URL: ${PUBLIC_STREAM_URL:-}
+      PUBLIC_MAIN_REPO_URL: ${PUBLIC_MAIN_REPO_URL:-https://github.com/jamesking210/djmixhub-radio-site}
+      PUBLIC_AZURACAST_REPO_URL: ${PUBLIC_AZURACAST_REPO_URL:-https://github.com/AzuraCast/AzuraCast}
+      PUBLIC_GITHUB_URL: ${PUBLIC_GITHUB_URL:-https://github.com/jamesking210}
+      PUBLIC_CONTACT_EMAIL: ${PUBLIC_CONTACT_EMAIL:-djmixhubradio@gmail.com}
     ports:
-      - "8085:80"
+      - "${PORT:-8085}:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://localhost/health >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  djmixhub-embed-site:
+    build:
+      context: .
+      dockerfile: embedded-site/Dockerfile
+    container_name: djmixhub-embed-site
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-https://djmixhub.com}
+      PUBLIC_SITE_NAME: ${PUBLIC_SITE_NAME:-DJMIXHUB}
+      PUBLIC_SITE_TAGLINE: ${PUBLIC_SITE_TAGLINE:-Open Source Energy. Community Sourced Mixes.}
+      PUBLIC_RADIO_BASE_URL: ${PUBLIC_RADIO_BASE_URL:-https://radio.djmixhub.com}
+      PUBLIC_STATION_SHORTCODE: ${PUBLIC_STATION_SHORTCODE:-djmixhub}
+      PUBLIC_STATION_NAME: ${PUBLIC_STATION_NAME:-DJMIXHUB}
+      PUBLIC_NOW_PLAYING_URL: ${PUBLIC_NOW_PLAYING_URL:-https://radio.djmixhub.com/api/nowplaying/djmixhub}
+      PUBLIC_PLAYER_URL: ${PUBLIC_PLAYER_URL:-https://radio.djmixhub.com/public/djmixhub}
+      PUBLIC_MAIN_REPO_URL: ${PUBLIC_MAIN_REPO_URL:-https://github.com/jamesking210/djmixhub-radio-site}
+      PUBLIC_AZURACAST_REPO_URL: ${PUBLIC_AZURACAST_REPO_URL:-https://github.com/AzuraCast/AzuraCast}
+      PUBLIC_GITHUB_URL: ${PUBLIC_GITHUB_URL:-https://github.com/jamesking210}
+      PUBLIC_CONTACT_EMAIL: ${PUBLIC_CONTACT_EMAIL:-djmixhubradio@gmail.com}
+    ports:
+      - "${EMBED_PORT:-8087}:80"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O- http://localhost/health >/dev/null 2>&1 || exit 1"]
