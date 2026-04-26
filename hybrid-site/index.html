@@ -15,7 +15,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
-    <link rel="stylesheet" href="styles.css?v=20260425c" />
+    <link rel="stylesheet" href="styles.css?v=20260425g" />
   </head>
   <body>
     <div class="terms-gate" id="termsGate" aria-hidden="true">
@@ -70,43 +70,82 @@
             <p>DJMixHub stays simple on purpose: press play, keep browsing, and let the station run.</p>
           </div>
 
-          <div class="now-grid">
-            <article class="card now-card now-card--feature">
-              <img id="onAirArt" class="now-card__art" src="assets/logo.jpg" alt="Current artwork" />
-              <div>
-                <div class="now-card__heading">
-                  <span class="meta-label">Now playing</span>
-                  <span class="status-badge" id="statusBadge">Loading...</span>
-                </div>
-                <strong id="onAirTitle" class="track-title">Loading current mix...</strong>
-                <span id="onAirArtist" class="track-artist">Checking station metadata...</span>
-                <div class="now-card__chips">
-                  <span class="listener-pill"><strong id="heroListeners">--</strong> listeners</span>
-                </div>
-                <div class="progress" aria-label="Track progress">
-                  <progress id="trackProgress" class="progress__bar" value="0" max="1"></progress>
-                  <div class="progress__meta">
-                    <span id="trackElapsed">0:00</span>
-                    <span id="trackDuration">0:00</span>
+          <div class="onair-layout">
+            <div class="onair-main">
+              <article class="card now-card now-card--feature">
+                <img id="onAirArt" class="now-card__art" src="assets/logo.jpg" alt="Current artwork" />
+                <div>
+                  <div class="now-card__heading">
+                    <span class="meta-label">Now playing</span>
+                    <span class="status-badge" id="statusBadge">Loading...</span>
+                  </div>
+                  <strong id="onAirTitle" class="track-title">Loading current mix...</strong>
+                  <span id="onAirArtist" class="track-artist">Checking station metadata...</span>
+                  <div class="now-card__chips">
+                    <span class="listener-pill"><strong id="heroListeners">--</strong> listeners</span>
+                    <span class="listener-pill" id="onAirGenrePill">Genre: Mix</span>
+                  </div>
+                  <div class="progress" aria-label="Track progress">
+                    <progress id="trackProgress" class="progress__bar" value="0" max="1"></progress>
+                    <div class="progress__meta">
+                      <span id="trackElapsed">0:00</span>
+                      <span id="trackDuration">0:00</span>
+                    </div>
+                  </div>
+                  <div class="now-card__actions">
+                    <button class="button button--primary" id="heroListenButton" type="button">Play station</button>
                   </div>
                 </div>
-                <div class="now-card__actions">
-                  <button class="button button--primary" id="heroListenButton" type="button">Play station</button>
+              </article>
+
+              <article class="card now-card now-card--rotation">
+                <div class="rotation-grid">
+                  <div>
+                    <span class="meta-label">Up next</span>
+                    <div id="nextList" class="queue-list" aria-live="polite">
+                      <div class="queue-item">
+                        <strong id="nextTitle" class="track-title">Station rotation</strong>
+                        <span id="nextMeta" class="track-artist">More mixes are queued up next.</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span class="meta-label">Recently played</span>
+                    <div id="historyList" class="history-list" aria-live="polite">
+                      <div class="history-item">
+                        <strong id="historyTitle" class="track-title">Recent set history</strong>
+                        <span id="historyMeta" class="track-artist">Recent plays will show here when available.</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              </article>
+            </div>
+
+            <aside class="card chat-panel">
+              <div class="chat-panel__heading">
+                <span class="eyebrow">Live chat</span>
+                <h3>Twitch chat</h3>
               </div>
-            </article>
-
-            <article class="card now-card">
-              <span class="meta-label">Up next</span>
-              <strong id="nextTitle" class="track-title">Station rotation</strong>
-              <span id="nextMeta" class="track-artist">More mixes are queued up next.</span>
-            </article>
-
-            <article class="card now-card">
-              <span class="meta-label">Recently played</span>
-              <strong id="historyTitle" class="track-title">Recent set history</strong>
-              <span id="historyMeta" class="track-artist">Recent plays will show here when available.</span>
-            </article>
+              <p>Hang out with listeners and chat with the station community while the mixes run.</p>
+              <iframe
+                id="twitchChatFrame"
+                class="chat-panel__frame"
+                title="DJMixHub Twitch chat"
+                loading="lazy"
+                sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-modals"
+              ></iframe>
+              <a
+                id="twitchChatLink"
+                class="simple-link chat-panel__link"
+                href="https://www.twitch.tv/popout/jimboslicechicago/chat"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open chat in Twitch
+              </a>
+            </aside>
           </div>
         </div>
       </section>
@@ -182,7 +221,7 @@
       <div class="station-dock__meta">
         <span class="station-dock__label"><strong id="dockListeners">--</strong> listeners</span>
         <strong id="dockTitle">Loading current mix...</strong>
-        <span id="dockArtist">Checking station metadata...</span>
+        <span class="station-dock__subline"><span id="dockArtist">Checking station metadata...</span><span id="dockGenre">Genre: Mix</span></span>
       </div>
       <div class="station-dock__controls">
         <button class="button button--primary station-dock__button" id="dockPlayButton" type="button">Play</button>
@@ -195,8 +234,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
-    <script src="config.js?v=20260425c"></script>
-    <script src="dj-data.js?v=20260425c"></script>
-    <script src="app.js?v=20260425c"></script>
+    <script src="config.js?v=20260425g"></script>
+    <script src="dj-data.js?v=20260425g"></script>
+    <script src="app.js?v=20260425g"></script>
   </body>
 </html>

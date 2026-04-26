@@ -8,6 +8,7 @@ const DEFAULT_CONFIG = {
   nowPlayingUrl: 'https://radio.djmixhub.com/api/nowplaying/djmixhub',
   streamUrl: '',
   hlsUrl: '',
+  twitchChannel: 'jimboslicechicago',
   mainRepoUrl: 'https://github.com/jamesking210/djmixhub-radio-site',
   azuracastRepoUrl: 'https://github.com/AzuraCast/AzuraCast',
   githubUrl: 'https://github.com/jamesking210',
@@ -53,6 +54,7 @@ function buildConfig() {
     nowPlayingUrl: normalizeString(runtimeConfig.nowPlayingUrl) || buildUrl(radioBaseUrl, `/api/nowplaying/${stationShortcode}`),
     streamUrl: normalizeString(runtimeConfig.streamUrl) || buildUrl(radioBaseUrl, `/listen/${stationShortcode}/radio.mp3`),
     hlsUrl: normalizeString(runtimeConfig.hlsUrl),
+    twitchChannel: normalizeString(runtimeConfig.twitchChannel, DEFAULT_CONFIG.twitchChannel),
     mainRepoUrl: normalizeString(runtimeConfig.mainRepoUrl, DEFAULT_CONFIG.mainRepoUrl),
     azuracastRepoUrl: normalizeString(runtimeConfig.azuracastRepoUrl, DEFAULT_CONFIG.azuracastRepoUrl),
     githubUrl: normalizeString(runtimeConfig.githubUrl, DEFAULT_CONFIG.githubUrl),
@@ -88,17 +90,23 @@ const elements = {
   headerUniqueListeners: document.getElementById('headerUniqueListeners'),
   statusBadge: document.getElementById('statusBadge'),
   heroListeners: document.getElementById('heroListeners'),
+  onAirGenrePill: document.getElementById('onAirGenrePill'),
   onAirArt: document.getElementById('onAirArt'),
   onAirTitle: document.getElementById('onAirTitle'),
   onAirArtist: document.getElementById('onAirArtist'),
   nextTitle: document.getElementById('nextTitle'),
   nextMeta: document.getElementById('nextMeta'),
+  nextList: document.getElementById('nextList'),
   historyTitle: document.getElementById('historyTitle'),
   historyMeta: document.getElementById('historyMeta'),
+  historyList: document.getElementById('historyList'),
   dockArt: document.getElementById('dockArt'),
   dockListeners: document.getElementById('dockListeners'),
   dockTitle: document.getElementById('dockTitle'),
   dockArtist: document.getElementById('dockArtist'),
+  dockGenre: document.getElementById('dockGenre'),
+  twitchChatFrame: document.getElementById('twitchChatFrame'),
+  twitchChatLink: document.getElementById('twitchChatLink'),
   progress: document.getElementById('trackProgress'),
   progressElapsed: document.getElementById('trackElapsed'),
   progressDuration: document.getElementById('trackDuration'),
@@ -132,6 +140,28 @@ function formatDuration(totalSeconds) {
   }
 
   return `${minutes}:${String(seconds).padStart(2, '0')}`;
+}
+
+function formatChicagoTime(unixTimestamp) {
+  const timestamp = Number(unixTimestamp);
+  if (!timestamp) {
+    return '';
+  }
+
+  try {
+    return new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Chicago',
+      hour: 'numeric',
+      minute: '2-digit'
+    }).format(new Date(timestamp * 1000));
+  } catch (_error) {
+    return '';
+  }
+}
+
+function getSongGenre(song) {
+  const genre = normalizeString(song?.genre);
+  return genre || 'Mix';
 }
 
 function normalizePossibleUrl(value) {
@@ -185,6 +215,19 @@ function applyConfig() {
       node.hidden = false;
     });
   });
+}
+
+function setupTwitchChat() {
+  const channel = normalizeString(CONFIG.twitchChannel);
+  const hostname = normalizeString(window.location.hostname);
+
+  if (!channel || !elements.twitchChatFrame || !elements.twitchChatLink) {
+    return;
+  }
+
+  const parent = hostname || 'localhost';
+  elements.twitchChatFrame.src = `https://www.twitch.tv/embed/${encodeURIComponent(channel)}/chat?parent=${encodeURIComponent(parent)}&darkpopout`;
+  elements.twitchChatLink.href = `https://www.twitch.tv/popout/${encodeURIComponent(channel)}/chat`;
 }
 
 function renderDjs() {
@@ -365,13 +408,15 @@ function updateArtwork(art, altText) {
 function updateNowPlaying(nowPlaying) {
   const song = nowPlaying?.now_playing?.song ?? {};
   const nextSong = nowPlaying?.playing_next?.song ?? {};
-  const historySong = Array.isArray(nowPlaying?.song_history) ? nowPlaying.song_history[0]?.song ?? {} : {};
+  const historySongs = Array.isArray(nowPlaying?.song_history) ? nowPlaying.song_history.slice(0, 5) : [];
+  const historySong = historySongs[0]?.song ?? {};
   const totalListeners = nowPlaying?.listeners?.total ?? nowPlaying?.listeners?.current ?? 0;
   const uniqueListeners = nowPlaying?.listeners?.unique ?? totalListeners;
   const statusText = getStatusText(nowPlaying);
   const art = normalizePossibleUrl(song.art || nowPlaying?.live?.art) || CONFIG.fallbackArtwork;
   const title = song.title || `${CONFIG.stationName} radio`;
   const artist = song.artist || 'Always-on mix radio';
+  const genre = getSongGenre(song);
   const hlsUrl = normalizePossibleUrl(nowPlaying?.station?.hls_url);
   const listenUrl = normalizePossibleUrl(nowPlaying?.station?.listen_url);
 
@@ -393,8 +438,16 @@ function updateNowPlaying(nowPlaying) {
     elements.heroListeners.textContent = totalListeners;
   }
 
+  if (elements.onAirGenrePill) {
+    elements.onAirGenrePill.textContent = `Genre: ${genre}`;
+  }
+
   if (elements.dockListeners) {
     elements.dockListeners.textContent = totalListeners;
+  }
+
+  if (elements.dockGenre) {
+    elements.dockGenre.textContent = `Genre: ${genre}`;
   }
 
   if (elements.headerUniqueListeners) {
@@ -413,12 +466,80 @@ function updateNowPlaying(nowPlaying) {
     elements.nextMeta.textContent = nextSong.artist || 'More mixes are queued up next.';
   }
 
+  if (elements.nextList) {
+    const nextItems = [];
+    const nextStartLabel = formatChicagoTime(nowPlaying?.playing_next?.played_at);
+
+    if (nextSong.title || nextSong.artist) {
+      const nextGenre = getSongGenre(nextSong);
+      nextItems.push(`
+        <div class="queue-item">
+          <strong>${escapeHtml(nextSong.title || 'Station rotation')}</strong>
+          <span>${escapeHtml(nextSong.artist || 'More mixes are queued up next.')}</span>
+          <small>${escapeHtml(nextGenre)}</small>
+          ${nextStartLabel ? `<small>${escapeHtml(nextStartLabel)} Chicago time</small>` : ''}
+        </div>
+      `);
+    }
+
+    if (nowPlaying?.playing_next?.duration) {
+      const secondStart = Number(nowPlaying.playing_next.played_at || 0) + Math.floor(Number(nowPlaying.playing_next.duration) || 0);
+      const secondLabel = formatChicagoTime(secondStart);
+      nextItems.push(`
+        <div class="queue-item">
+          <strong>Then station rotation continues</strong>
+          <span>More community-sourced mixes follow in sequence.</span>
+          <small>Mix rotation</small>
+          ${secondLabel ? `<small>${escapeHtml(secondLabel)} Chicago time</small>` : ''}
+        </div>
+      `);
+    }
+
+    nextItems.push(`
+      <div class="queue-item">
+        <strong>Always-on mix flow</strong>
+        <span>The live queue keeps rolling after the next set.</span>
+        <small>Mix rotation</small>
+      </div>
+    `);
+
+    elements.nextList.innerHTML = nextItems.join('');
+  }
+
   if (elements.historyTitle) {
     elements.historyTitle.textContent = historySong.title || 'Recent set history';
   }
 
   if (elements.historyMeta) {
     elements.historyMeta.textContent = historySong.artist || 'Recent plays will show here when available.';
+  }
+
+  if (elements.historyList) {
+    if (historySongs.length) {
+      elements.historyList.innerHTML = historySongs.map((entry) => {
+        const entrySong = entry?.song ?? {};
+        const entryTitle = entrySong.title || 'Station rotation';
+        const entryArtist = entrySong.artist || CONFIG.stationName;
+        const entryGenre = getSongGenre(entrySong);
+        const entryTime = formatChicagoTime(entry?.played_at);
+
+        return `
+          <div class="history-item">
+            <strong>${escapeHtml(entryTitle)}</strong>
+            <span>${escapeHtml(entryArtist)}</span>
+            <small>${escapeHtml(entryGenre)}</small>
+            ${entryTime ? `<small>${escapeHtml(entryTime)} Chicago time</small>` : ''}
+          </div>
+        `;
+      }).join('');
+    } else {
+      elements.historyList.innerHTML = `
+        <div class="history-item">
+          <strong>Recent set history</strong>
+          <span>Recent plays will show here when available.</span>
+        </div>
+      `;
+    }
   }
 
   state.currentHlsUrl = hlsUrl || state.currentHlsUrl || CONFIG.hlsUrl;
@@ -652,6 +773,7 @@ async function fetchNowPlaying() {
 
 function init() {
   applyConfig();
+  setupTwitchChat();
   renderDjs();
   readTermsState();
   readVolumeState();

@@ -11,6 +11,7 @@ set -eu
 : "${PUBLIC_STREAM_URL:=}"
 : "${PUBLIC_HLS_URL:=}"
 : "${PUBLIC_PLAYER_URL:=https://radio.djmixhub.com/public/djmixhub}"
+: "${PUBLIC_TWITCH_CHANNEL:=jimboslicechicago}"
 : "${PUBLIC_MAIN_REPO_URL:=https://github.com/jamesking210/djmixhub-radio-site}"
 : "${PUBLIC_AZURACAST_REPO_URL:=https://github.com/AzuraCast/AzuraCast}"
 : "${PUBLIC_GITHUB_URL:=https://github.com/jamesking210}"
@@ -27,6 +28,7 @@ ${PUBLIC_NOW_PLAYING_URL}
 ${PUBLIC_STREAM_URL}
 ${PUBLIC_HLS_URL}
 ${PUBLIC_PLAYER_URL}
+${PUBLIC_TWITCH_CHANNEL}
 ${PUBLIC_MAIN_REPO_URL}
 ${PUBLIC_AZURACAST_REPO_URL}
 ${PUBLIC_GITHUB_URL}
