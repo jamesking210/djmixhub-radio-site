@@ -185,7 +185,7 @@ function normalizePossibleUrl(value) {
 }
 
 function applyConfig() {
-  document.title = `${CONFIG.siteName} | HLS Listener Site`;
+  document.title = `${CONFIG.siteName} | Community-Sourced Mix Radio`;
 
   elements.stationName.forEach((node) => {
     node.textContent = CONFIG.siteName;
@@ -408,7 +408,7 @@ function updateArtwork(art, altText) {
 function updateNowPlaying(nowPlaying) {
   const song = nowPlaying?.now_playing?.song ?? {};
   const nextSong = nowPlaying?.playing_next?.song ?? {};
-  const historySongs = Array.isArray(nowPlaying?.song_history) ? nowPlaying.song_history.slice(0, 5) : [];
+  const historySongs = Array.isArray(nowPlaying?.song_history) ? nowPlaying.song_history.slice(0, 4) : [];
   const historySong = historySongs[0]?.song ?? {};
   const totalListeners = nowPlaying?.listeners?.total ?? nowPlaying?.listeners?.current ?? 0;
   const uniqueListeners = nowPlaying?.listeners?.unique ?? totalListeners;
