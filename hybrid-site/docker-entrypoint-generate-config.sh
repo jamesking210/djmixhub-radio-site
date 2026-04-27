@@ -11,7 +11,7 @@ set -eu
 : "${PUBLIC_STREAM_URL:=}"
 : "${PUBLIC_HLS_URL:=}"
 : "${PUBLIC_PLAYER_URL:=https://radio.djmixhub.com/public/djmixhub}"
-: "${PUBLIC_TWITCH_CHANNEL:=jimboslicechicago}"
+: "${PUBLIC_TWITCH_CHANNEL:=djmixhub}"
 : "${PUBLIC_MAIN_REPO_URL:=https://github.com/jamesking210/djmixhub-radio-site}"
 : "${PUBLIC_AZURACAST_REPO_URL:=https://github.com/AzuraCast/AzuraCast}"
 : "${PUBLIC_GITHUB_URL:=https://github.com/jamesking210}"

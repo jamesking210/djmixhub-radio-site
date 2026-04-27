@@ -8,7 +8,7 @@ const DEFAULT_CONFIG = {
   nowPlayingUrl: 'https://radio.djmixhub.com/api/nowplaying/djmixhub',
   streamUrl: '',
   hlsUrl: '',
-  twitchChannel: 'jimboslicechicago',
+  twitchChannel: 'djmixhub',
   mainRepoUrl: 'https://github.com/jamesking210/djmixhub-radio-site',
   azuracastRepoUrl: 'https://github.com/AzuraCast/AzuraCast',
   githubUrl: 'https://github.com/jamesking210',
