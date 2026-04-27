@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DJMixHub | Free Internet Radio</title>
+    <title>DJMixHub | Community-Sourced Mix Radio</title>
     <meta
       name="description"
-      content="DJMixHub is a free, open-source internet radio station for community-sourced DJ mixes."
+      content="DJMixHub is a free, community-sourced internet radio station for DJ mixes, guest sets, and long-form rotation."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,7 +15,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
-    <link rel="stylesheet" href="styles.css?v=20260423b" />
+    <link rel="stylesheet" href="styles.css?v=20260426a" />
   </head>
   <body>
     <div class="terms-gate" id="termsGate" aria-hidden="true">
@@ -35,7 +35,7 @@
 
     <header class="site-header">
       <div class="container site-header__inner">
-        <a class="brand" href="#top" aria-label="DJMixHub home">
+        <a class="brand" href="#top" aria-label="DJMixHub radio site home">
           <img
             src="assets/logo.jpg"
             alt="DJMixHub"
@@ -46,159 +46,196 @@
             <strong data-config-text="siteName">DJMixHub</strong>
             <span data-config-text="siteTagline">Open Source Energy. Community Sourced Mixes.</span>
           </div>
+          <div class="header-listeners" aria-live="polite">
+            <span class="header-listeners__label">Live</span>
+            <strong id="headerUniqueListeners">--</strong>
+          </div>
         </a>
 
         <nav class="site-nav" aria-label="Main navigation">
-          <a href="#about">About</a>
+          <a href="#onair">On Air</a>
           <a href="#djs">DJs</a>
           <a href="#opensource">Open Source</a>
-          <a href="#bottomPlayer">Listen</a>
+          <a data-config-email>Contact</a>
         </nav>
       </div>
     </header>
 
     <main id="top">
-      <section id="about" class="hero section">
-        <div class="container hero__grid">
-          <div class="hero__copy">
-            <span class="eyebrow" data-config-text="siteTagline">Open Source Energy. Community Sourced Mixes.</span>
-            <h1>Community-sourced mixes, on air.</h1>
-            <p class="hero__lede">
-              DJMixHub is a free internet radio station built around long-form DJ mixes. It is open source, self-hosted, and run as
-              a non-commercial project.
-            </p>
-            <p class="hero__lede">
-              The goal is simple: keep good mixes playing, make the station easy to use on phone and desktop, and give more DJs a
-              place to be heard.
-            </p>
-            <div class="hero__facts" aria-label="Station facts">
-              <span>Free to listen</span>
-              <span>Mixes first</span>
-              <span>Open-source stack</span>
-            </div>
-            <div class="hero__links" aria-label="Quick section links">
-              <a href="#bottomPlayer">Listen now</a>
-              <a href="#djs">See DJs</a>
-              <a href="#opensource">Project links</a>
-            </div>
+      <section class="section" id="onair">
+        <div class="container">
+          <div class="section-heading">
+            <span class="eyebrow">On air</span>
+            <h2>Live mixes, current rotation, and what is coming up next.</h2>
+            <p>DJMixHub stays simple on purpose: press play, keep browsing, and let the station run.</p>
           </div>
 
-          <aside class="card hero-panel" aria-label="Station details">
-            <div class="hero-panel__row">
-              <span class="hero-panel__label">Station</span>
-              <strong data-config-text="siteName">DJMixHub</strong>
+          <div class="onair-layout">
+            <div class="onair-main">
+              <article class="card now-card now-card--feature">
+                <img id="onAirArt" class="now-card__art" src="assets/logo.jpg" alt="Current artwork" />
+                <div>
+                  <div class="now-card__heading">
+                    <span class="meta-label">Now playing</span>
+                    <span class="status-badge" id="statusBadge">Loading...</span>
+                  </div>
+                  <strong id="onAirTitle" class="track-title">Loading current mix...</strong>
+                  <span id="onAirArtist" class="track-artist">Checking station metadata...</span>
+                  <div class="now-card__chips">
+                    <span class="listener-pill"><strong id="heroListeners">--</strong> listeners</span>
+                    <span class="listener-pill" id="onAirGenrePill">Genre: Mix</span>
+                  </div>
+                  <div class="progress" aria-label="Track progress">
+                    <progress id="trackProgress" class="progress__bar" value="0" max="1"></progress>
+                    <div class="progress__meta">
+                      <span id="trackElapsed">0:00</span>
+                      <span id="trackDuration">0:00</span>
+                    </div>
+                  </div>
+                  <div class="now-card__actions">
+                    <button class="button button--primary" id="heroListenButton" type="button">Play station</button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="card now-card now-card--rotation">
+                <div class="rotation-grid">
+                  <div>
+                    <span class="meta-label">Up next</span>
+                    <div id="nextList" class="queue-list" aria-live="polite">
+                      <div class="queue-item">
+                        <strong id="nextTitle" class="track-title">Station rotation</strong>
+                        <span id="nextMeta" class="track-artist">More mixes are queued up next.</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span class="meta-label">Recently played</span>
+                    <div id="historyList" class="history-list" aria-live="polite">
+                      <div class="history-item">
+                        <strong id="historyTitle" class="track-title">Recent set history</strong>
+                        <span id="historyMeta" class="track-artist">Recent plays will show here when available.</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
             </div>
-            <div class="hero-panel__row">
-              <span class="hero-panel__label">Platform</span>
-              <strong>AzuraCast + Docker</strong>
-            </div>
-            <div class="hero-panel__row">
-              <span class="hero-panel__label">Format</span>
-              <strong>Community-sourced DJ mixes</strong>
-            </div>
-            <div class="hero-panel__row">
-              <span class="hero-panel__label">Contact</span>
-              <a class="hero-panel__link" data-config-email>djmixhubradio@gmail.com</a>
-            </div>
-          </aside>
+
+            <aside class="card chat-panel">
+              <div class="chat-panel__heading">
+                <span class="eyebrow">Live chat</span>
+                <h3>Twitch chat</h3>
+              </div>
+              <p>Hang out with listeners and chat with the station community while the mixes run.</p>
+              <iframe
+                id="twitchChatFrame"
+                class="chat-panel__frame"
+                title="DJMixHub Twitch chat"
+                loading="lazy"
+                sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-modals"
+              ></iframe>
+              <a
+                id="twitchChatLink"
+                class="simple-link chat-panel__link"
+                href="https://www.twitch.tv/popout/djmixhub/chat"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open chat in Twitch
+              </a>
+            </aside>
+          </div>
         </div>
       </section>
 
-      <section id="djs" class="section">
+      <section class="section" id="djs">
         <div class="container">
           <div class="section-heading">
             <span class="eyebrow">DJs</span>
-            <h2>The DJs behind the station.</h2>
-            <p>Resident sets, guest mixes, and room for more community-sourced mixes as the station grows.</p>
+            <h2>The people behind the station.</h2>
+            <p>Resident DJs, guest contributors, and space for more mixes as the roster grows.</p>
           </div>
           <div id="djGrid" class="dj-grid" aria-live="polite"></div>
         </div>
       </section>
 
-      <section id="opensource" class="section section--soft">
-        <div class="container build-grid">
-          <article class="card simple-card">
+      <section class="section" id="opensource">
+        <div class="container">
+          <div class="section-heading">
             <span class="eyebrow">Open source</span>
-            <h2>Built to be reused.</h2>
-            <p>
-              DJMixHub runs on a small, reliable stack that stays easy to deploy and self-host. The station uses AzuraCast for radio
-              automation, Docker for deployment, and a lightweight static front end.
-            </p>
-            <div class="build-list">
-              <div class="build-item">
-                <strong>AzuraCast</strong>
-                <span>Station automation, metadata, listener counts, and public API.</span>
-              </div>
-              <div class="build-item">
-                <strong>Docker</strong>
-                <span>Simple local and self-hosted deployment.</span>
-              </div>
-              <div class="build-item">
-                <strong>Static site</strong>
-                <span>Fast to edit, easy to host, and easy to keep clean.</span>
-              </div>
-            </div>
-          </article>
+            <h2>Free, open-source, and built to be self-hosted.</h2>
+            <p>DJMixHub is a non-commercial radio project powered by AzuraCast, Docker, and a lightweight custom site.</p>
+          </div>
 
-          <article class="card simple-card">
-            <span class="eyebrow">Project links</span>
-            <h2>Use the same tools.</h2>
-            <p>Everything here is built with boring, reliable pieces that are easy to run and easy to share.</p>
-            <div class="simple-links">
-              <a class="button button--ghost" data-config-href="azuracastRepoUrl" target="_blank" rel="noreferrer">AzuraCast</a>
-              <a class="button button--ghost" data-config-href="mainRepoUrl" target="_blank" rel="noreferrer">DJMixHub site</a>
-              <a class="button button--ghost" data-config-href="radioBaseUrl" target="_blank" rel="noreferrer">Live station</a>
-            </div>
-            <a class="simple-card__contact" data-config-email>djmixhubradio@gmail.com</a>
-          </article>
+          <div class="info-grid">
+            <article class="card info-card">
+              <span class="meta-label">Playback</span>
+              <h3>Custom station player</h3>
+              <p>The site keeps its own bottom player so listeners can move around the page without losing the stream.</p>
+              <a class="simple-link" data-config-href="radioBaseUrl" target="_blank" rel="noreferrer">Open station</a>
+            </article>
+
+            <article class="card info-card">
+              <span class="meta-label">Platform</span>
+              <h3>AzuraCast</h3>
+              <p>Station metadata, now playing data, automation, and listener stats all come from the radio platform.</p>
+              <a class="simple-link" data-config-href="azuracastRepoUrl" target="_blank" rel="noreferrer">View AzuraCast</a>
+            </article>
+
+            <article class="card info-card">
+              <span class="meta-label">Project</span>
+              <h3>DIY and deployable</h3>
+              <p>The whole site is meant to stay easy to run, edit, and self-host without turning into a giant stack.</p>
+              <a class="simple-link" data-config-href="mainRepoUrl" target="_blank" rel="noreferrer">View site repo</a>
+            </article>
+
+            <article class="card info-card">
+              <span class="meta-label">Contact</span>
+              <h3>DJMixHub radio</h3>
+              <p>Questions, guest mix ideas, or DJ interest can go straight to the station inbox.</p>
+              <a class="simple-link" data-config-email>djmixhubradio@gmail.com</a>
+            </article>
+          </div>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
       <div class="container site-footer__inner">
-        <p><span data-config-text="siteName">DJMixHub</span> <span class="site-footer__dot">•</span> <span data-config-text="siteTagline">Open Source Energy. Community Sourced Mixes.</span></p>
-        <div>
+        <p><span data-config-text="siteName">DJMixHub</span> • <span data-config-text="siteTagline">Open Source Energy. Community Sourced Mixes.</span></p>
+        <div class="site-footer__links">
+          <a data-config-href="radioBaseUrl" target="_blank" rel="noreferrer">Station</a>
+          <a data-config-href="githubUrl" target="_blank" rel="noreferrer">GitHub</a>
           <a href="terms.html">Terms</a>
           <a data-config-email>djmixhubradio@gmail.com</a>
-          <a data-config-href="githubUrl" data-config-optional="githubUrl" target="_blank" rel="noreferrer" hidden>GitHub</a>
         </div>
       </div>
     </footer>
 
-    <div class="bottom-player" id="bottomPlayer">
-      <div class="bottom-player__art-wrap">
-        <img id="playerArt" class="bottom-player__art" src="assets/logo.jpg" alt="Current artwork" />
+    <div class="station-dock" id="stationDock">
+      <div class="station-dock__art-wrap">
+        <img id="dockArt" class="station-dock__art" src="assets/logo.jpg" alt="Current artwork" />
       </div>
-
-      <div class="bottom-player__track">
-        <div class="bottom-player__status-line">
-          <span class="player-metric"><strong id="playerListeners">--</strong> listeners</span>
-        </div>
-        <strong id="playerTitle">DJMixHub radio</strong>
-        <span id="playerArtist">Fetching current track info...</span>
-        <div class="track-progress" aria-label="Track progress">
-          <progress id="playerProgress" class="track-progress__bar" value="0" max="1"></progress>
-          <div class="track-progress__meta">
-            <span id="playerElapsed">0:00</span>
-            <span id="playerDuration">0:00</span>
-          </div>
-        </div>
+      <div class="station-dock__meta">
+        <span class="station-dock__label"><strong id="dockListeners">--</strong> listeners</span>
+        <strong id="dockTitle">Loading current mix...</strong>
+        <span class="station-dock__subline"><span id="dockArtist">Checking station metadata...</span><span id="dockGenre">Genre: Mix</span></span>
       </div>
-
-      <div class="bottom-player__controls">
-        <button class="player-button" id="playButton" aria-label="Play or stop station" disabled>Play</button>
-        <label class="volume-control" for="volumeSlider">
+      <div class="station-dock__controls">
+        <button class="button button--primary station-dock__button" id="dockPlayButton" type="button">Play</button>
+        <label class="dock-volume" for="volumeSlider">
           <span>Volume</span>
-          <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.5" />
+          <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="1" />
         </label>
       </div>
-
       <audio id="radioPlayer" preload="none"></audio>
     </div>
 
-    <script src="config.js?v=20260423b"></script>
-    <script src="dj-data.js?v=20260423b"></script>
-    <script src="script.js?v=20260423b"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+    <script src="config.js?v=20260426a"></script>
+    <script src="dj-data.js?v=20260426a"></script>
+    <script src="app.js?v=20260426a"></script>
   </body>
 </html>
