@@ -8,7 +8,6 @@ window.DJMIXHUB_EMBED_CONFIG = Object.freeze({
   nowPlayingUrl: "${PUBLIC_NOW_PLAYING_URL}",
   streamUrl: "${PUBLIC_STREAM_URL}",
   hlsUrl: "${PUBLIC_HLS_URL}",
-  twitchChannel: "${PUBLIC_TWITCH_CHANNEL}",
   mainRepoUrl: "${PUBLIC_MAIN_REPO_URL}",
   azuracastRepoUrl: "${PUBLIC_AZURACAST_REPO_URL}",
   githubUrl: "${PUBLIC_GITHUB_URL}",

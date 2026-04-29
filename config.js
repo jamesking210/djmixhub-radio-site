@@ -8,7 +8,6 @@ window.DJMIXHUB_EMBED_CONFIG = Object.freeze({
   nowPlayingUrl: 'https://radio.djmixhub.com/api/nowplaying/djmixhub',
   streamUrl: 'https://radio.djmixhub.com/listen/djmixhub/radio.mp3',
   hlsUrl: '',
-  twitchChannel: 'djmixhub',
   mainRepoUrl: 'https://github.com/jamesking210/djmixhub-radio-site',
   azuracastRepoUrl: 'https://github.com/AzuraCast/AzuraCast',
   githubUrl: 'https://github.com/jamesking210',

@@ -6,16 +6,18 @@ const DEFAULT_CONFIG = {
   stationShortcode: 'djmixhub',
   stationName: 'DJMixHub',
   nowPlayingUrl: 'https://radio.djmixhub.com/api/nowplaying/djmixhub',
+  nowPlayingStaticUrl: 'https://radio.djmixhub.com/api/nowplaying_static/djmixhub.json',
+  nowPlayingSseUrl: 'https://radio.djmixhub.com/api/live/nowplaying/sse',
   streamUrl: '',
   hlsUrl: '',
-  twitchChannel: 'djmixhub',
   mainRepoUrl: 'https://github.com/jamesking210/djmixhub-radio-site',
   azuracastRepoUrl: 'https://github.com/AzuraCast/AzuraCast',
   githubUrl: 'https://github.com/jamesking210',
   contactEmail: 'djmixhubradio@gmail.com',
   termsKey: 'djmixhub_hls_terms_accepted_v1',
   fallbackArtwork: 'assets/logo.jpg',
-  pollIntervalMs: 15000
+  pollIntervalMs: 12000,
+  pollIntervalErrorMs: 20000
 };
 
 function normalizeString(value, fallback = '') {
@@ -52,9 +54,10 @@ function buildConfig() {
     stationShortcode,
     stationName,
     nowPlayingUrl: normalizeString(runtimeConfig.nowPlayingUrl) || buildUrl(radioBaseUrl, `/api/nowplaying/${stationShortcode}`),
+    nowPlayingStaticUrl: buildUrl(radioBaseUrl, `/api/nowplaying_static/${stationShortcode}.json`),
+    nowPlayingSseUrl: buildUrl(radioBaseUrl, '/api/live/nowplaying/sse'),
     streamUrl: normalizeString(runtimeConfig.streamUrl) || buildUrl(radioBaseUrl, `/listen/${stationShortcode}/radio.mp3`),
     hlsUrl: normalizeString(runtimeConfig.hlsUrl),
-    twitchChannel: normalizeString(runtimeConfig.twitchChannel, DEFAULT_CONFIG.twitchChannel),
     mainRepoUrl: normalizeString(runtimeConfig.mainRepoUrl, DEFAULT_CONFIG.mainRepoUrl),
     azuracastRepoUrl: normalizeString(runtimeConfig.azuracastRepoUrl, DEFAULT_CONFIG.azuracastRepoUrl),
     githubUrl: normalizeString(runtimeConfig.githubUrl, DEFAULT_CONFIG.githubUrl),
@@ -71,6 +74,9 @@ const state = {
   pollTimer: null,
   progressTimer: null,
   reconnectTimer: null,
+  realtimeSource: null,
+  realtimeConnected: false,
+  usingRealtime: false,
   currentHlsUrl: CONFIG.hlsUrl,
   currentStreamUrl: CONFIG.streamUrl,
   trackStartedAt: null,
@@ -87,9 +93,7 @@ const elements = {
   volumeSlider: document.getElementById('volumeSlider'),
   heroListenButton: document.getElementById('heroListenButton'),
   dockPlayButton: document.getElementById('dockPlayButton'),
-  headerUniqueListeners: document.getElementById('headerUniqueListeners'),
   statusBadge: document.getElementById('statusBadge'),
-  heroListeners: document.getElementById('heroListeners'),
   onAirGenrePill: document.getElementById('onAirGenrePill'),
   onAirArt: document.getElementById('onAirArt'),
   onAirTitle: document.getElementById('onAirTitle'),
@@ -105,8 +109,6 @@ const elements = {
   dockTitle: document.getElementById('dockTitle'),
   dockArtist: document.getElementById('dockArtist'),
   dockGenre: document.getElementById('dockGenre'),
-  twitchChatFrame: document.getElementById('twitchChatFrame'),
-  twitchChatLink: document.getElementById('twitchChatLink'),
   progress: document.getElementById('trackProgress'),
   progressElapsed: document.getElementById('trackElapsed'),
   progressDuration: document.getElementById('trackDuration'),
@@ -215,19 +217,6 @@ function applyConfig() {
       node.hidden = false;
     });
   });
-}
-
-function setupTwitchChat() {
-  const channel = normalizeString(CONFIG.twitchChannel);
-  const hostname = normalizeString(window.location.hostname);
-
-  if (!channel || !elements.twitchChatFrame || !elements.twitchChatLink) {
-    return;
-  }
-
-  const parent = hostname || 'localhost';
-  elements.twitchChatFrame.src = `https://www.twitch.tv/embed/${encodeURIComponent(channel)}/chat?parent=${encodeURIComponent(parent)}&darkpopout`;
-  elements.twitchChatLink.href = `https://www.twitch.tv/popout/${encodeURIComponent(channel)}/chat`;
 }
 
 function renderDjs() {
@@ -411,7 +400,6 @@ function updateNowPlaying(nowPlaying) {
   const historySongs = Array.isArray(nowPlaying?.song_history) ? nowPlaying.song_history.slice(0, 4) : [];
   const historySong = historySongs[0]?.song ?? {};
   const totalListeners = nowPlaying?.listeners?.total ?? nowPlaying?.listeners?.current ?? 0;
-  const uniqueListeners = nowPlaying?.listeners?.unique ?? totalListeners;
   const statusText = getStatusText(nowPlaying);
   const art = normalizePossibleUrl(song.art || nowPlaying?.live?.art) || CONFIG.fallbackArtwork;
   const title = song.title || `${CONFIG.stationName} radio`;
@@ -434,10 +422,6 @@ function updateNowPlaying(nowPlaying) {
     }
   });
 
-  if (elements.heroListeners) {
-    elements.heroListeners.textContent = totalListeners;
-  }
-
   if (elements.onAirGenrePill) {
     elements.onAirGenrePill.textContent = `Genre: ${genre}`;
   }
@@ -448,10 +432,6 @@ function updateNowPlaying(nowPlaying) {
 
   if (elements.dockGenre) {
     elements.dockGenre.textContent = `Genre: ${genre}`;
-  }
-
-  if (elements.headerUniqueListeners) {
-    elements.headerUniqueListeners.textContent = uniqueListeners;
   }
 
   if (elements.statusBadge) {
@@ -755,30 +735,149 @@ async function togglePlayback() {
   }
 }
 
+function clearNowPlayingTimer() {
+  window.clearTimeout(state.pollTimer);
+  state.pollTimer = null;
+}
+
+function scheduleNowPlayingPoll(delayMs = CONFIG.pollIntervalMs) {
+  if (state.usingRealtime) {
+    return;
+  }
+
+  clearNowPlayingTimer();
+  state.pollTimer = window.setTimeout(fetchNowPlaying, delayMs);
+}
+
+function closeRealtimeNowPlaying() {
+  if (state.realtimeSource) {
+    state.realtimeSource.close();
+    state.realtimeSource = null;
+  }
+  state.realtimeConnected = false;
+  state.usingRealtime = false;
+}
+
+function handleRealtimeNowPlayingPayload(payload, useCurrentTime = true) {
+  const jsonData = payload?.data;
+  if (!jsonData) {
+    return;
+  }
+
+  const nowPlaying = jsonData.np || jsonData;
+  updateNowPlaying(nowPlaying);
+
+  if (useCurrentTime && jsonData.current_time && nowPlaying?.now_playing?.played_at) {
+    const elapsed = Math.max(0, Number(jsonData.current_time) - Number(nowPlaying.now_playing.played_at || 0));
+    setTrackProgress(elapsed, nowPlaying?.now_playing?.duration ?? 0);
+  }
+}
+
+function handleRealtimeNowPlayingMessage(rawMessage) {
+  const jsonData = JSON.parse(rawMessage);
+
+  if (jsonData.connect) {
+    const connectData = jsonData.connect;
+
+    if (Array.isArray(connectData.data)) {
+      connectData.data.forEach((row) => handleRealtimeNowPlayingPayload(row));
+      return;
+    }
+
+    Object.values(connectData.subs || {}).forEach((sub) => {
+      (sub.publications || []).forEach((row) => handleRealtimeNowPlayingPayload(row, false));
+    });
+    return;
+  }
+
+  if (jsonData.pub) {
+    handleRealtimeNowPlayingPayload(jsonData.pub);
+  }
+}
+
+function startRealtimeNowPlaying() {
+  if (typeof window.EventSource === 'undefined') {
+    scheduleNowPlayingPoll(0);
+    return;
+  }
+
+  const connectionToken = JSON.stringify({
+    subs: {
+      [`station:${CONFIG.stationShortcode}`]: {
+        recover: true
+      }
+    }
+  });
+
+  const params = new URLSearchParams({
+    cf_connect: connectionToken
+  });
+
+  closeRealtimeNowPlaying();
+
+  try {
+    state.realtimeSource = new window.EventSource(`${CONFIG.nowPlayingSseUrl}?${params.toString()}`);
+  } catch (error) {
+    console.error('Could not start realtime now playing feed:', error);
+    scheduleNowPlayingPoll(0);
+    return;
+  }
+
+  state.usingRealtime = true;
+
+  state.realtimeSource.onopen = () => {
+    state.realtimeConnected = true;
+  };
+
+  state.realtimeSource.onmessage = (event) => {
+    state.realtimeConnected = true;
+
+    try {
+      handleRealtimeNowPlayingMessage(event.data);
+    } catch (error) {
+      console.error('Could not parse realtime now playing update:', error);
+    }
+  };
+
+  state.realtimeSource.onerror = () => {
+    if (!state.realtimeConnected) {
+      closeRealtimeNowPlaying();
+      scheduleNowPlayingPoll(0);
+    }
+  };
+}
+
 async function fetchNowPlaying() {
   try {
-    const response = await fetch(`${CONFIG.nowPlayingUrl}?t=${Date.now()}`, { cache: 'no-store' });
+    const staticUrl = appendCacheBust(CONFIG.nowPlayingStaticUrl);
+    const response = await fetch(staticUrl, { cache: 'no-store' });
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+      const fallbackResponse = await fetch(`${CONFIG.nowPlayingUrl}?t=${Date.now()}`, { cache: 'no-store' });
+      if (!fallbackResponse.ok) {
+        throw new Error(`HTTP ${fallbackResponse.status}`);
+      }
+      const fallbackNowPlaying = await fallbackResponse.json();
+      updateNowPlaying(fallbackNowPlaying);
+      scheduleNowPlayingPoll(CONFIG.pollIntervalMs);
+      return;
     }
     const nowPlaying = await response.json();
     updateNowPlaying(nowPlaying);
+    scheduleNowPlayingPoll(CONFIG.pollIntervalMs);
   } catch (error) {
     console.error('Could not load station data:', error);
-  } finally {
-    window.clearTimeout(state.pollTimer);
-    state.pollTimer = window.setTimeout(fetchNowPlaying, CONFIG.pollIntervalMs);
+    scheduleNowPlayingPoll(CONFIG.pollIntervalErrorMs);
   }
 }
 
 function init() {
   applyConfig();
-  setupTwitchChat();
   renderDjs();
   readTermsState();
   readVolumeState();
   renderProgress();
   fetchNowPlaying();
+  startRealtimeNowPlaying();
   setPlaybackUi();
 
   elements.acceptTermsButton?.addEventListener('click', acceptTerms);

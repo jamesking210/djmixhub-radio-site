@@ -8,7 +8,7 @@ This repo now contains one site only: the production site that runs at port `808
 
 - custom sticky bottom player
 - AzuraCast now-playing, queue, and history data
-- Twitch chat panel driven by `PUBLIC_TWITCH_CHANNEL`
+- faster realtime metadata updates via AzuraCast high-performance now-playing with fallback polling
 - DJ roster from one editable data file
 - Docker-ready static site served by Nginx
 
@@ -17,7 +17,7 @@ This repo now contains one site only: the production site that runs at port `808
 - `index.html`: main homepage
 - `terms.html`: listener terms page
 - `styles.css`: site styles
-- `app.js`: player logic, now-playing updates, Twitch chat embed, and UI behavior
+- `app.js`: player logic, realtime now-playing updates, and UI behavior
 - `dj-data.js`: DJ roster data
 - `config.template.js`: runtime config template rendered inside Docker
 - `config.js`: safe local fallback config
@@ -52,7 +52,6 @@ Public site config:
 - `PUBLIC_NOW_PLAYING_URL`
 - `PUBLIC_STREAM_URL`
 - `PUBLIC_HLS_URL`
-- `PUBLIC_TWITCH_CHANNEL`
 - `PUBLIC_MAIN_REPO_URL`
 - `PUBLIC_AZURACAST_REPO_URL`
 - `PUBLIC_GITHUB_URL`
@@ -71,7 +70,7 @@ Deployment config:
 cp .env.example .env
 ```
 
-2. Edit `.env` for your station URLs, stream settings, Twitch channel, and contact info.
+2. Edit `.env` for your station URLs, stream settings, and contact info.
 
 3. Build and run the site:
 
@@ -97,7 +96,6 @@ PUBLIC_STATION_NAME=DJMIXHUB
 PUBLIC_NOW_PLAYING_URL=https://radio.djmixhub.com/api/nowplaying/djmixhub
 PUBLIC_STREAM_URL=https://radio.djmixhub.com/listen/djmixhub/radio.mp3
 PUBLIC_HLS_URL=
-PUBLIC_TWITCH_CHANNEL=djmixhub
 PUBLIC_MAIN_REPO_URL=https://github.com/jamesking210/djmixhub-radio-site
 PUBLIC_AZURACAST_REPO_URL=https://github.com/AzuraCast/AzuraCast
 PUBLIC_GITHUB_URL=https://github.com/jamesking210
@@ -133,6 +131,9 @@ newgrp docker
 ### 2. Clone the repo
 
 ```bash
+sudo mkdir -p /opt/custom-dockers
+sudo chown "$USER":"$USER" /opt/custom-dockers
+cd /opt/custom-dockers
 git clone https://github.com/jamesking210/djmixhub-radio-site.git
 cd djmixhub-radio-site
 ```
@@ -167,6 +168,9 @@ http://YOUR-SERVER-IP:8088
 Initial deploy:
 
 ```bash
+sudo mkdir -p /opt/custom-dockers
+sudo chown "$USER":"$USER" /opt/custom-dockers
+cd /opt/custom-dockers
 git clone https://github.com/jamesking210/djmixhub-radio-site.git
 cd djmixhub-radio-site
 cp .env.example .env
@@ -178,7 +182,7 @@ docker compose ps
 Update after a GitHub push:
 
 ```bash
-cd djmixhub-radio-site
+cd /opt/custom-dockers/djmixhub-radio-site
 git pull origin main
 docker compose up -d --build
 docker compose ps
@@ -187,7 +191,7 @@ docker compose ps
 If you only changed `.env`:
 
 ```bash
-cd djmixhub-radio-site
+cd /opt/custom-dockers/djmixhub-radio-site
 nano .env
 docker compose up -d --build
 ```
@@ -197,6 +201,7 @@ docker compose up -d --build
 Stop the site:
 
 ```bash
+cd /opt/custom-dockers/djmixhub-radio-site
 docker compose down
 ```
 

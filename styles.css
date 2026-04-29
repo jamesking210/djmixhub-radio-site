@@ -139,29 +139,6 @@ p {
   white-space: nowrap;
 }
 
-.header-listeners {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-left: 4px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--line);
-}
-
-.header-listeners__label {
-  color: #ffd4e8;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.header-listeners strong {
-  font-size: 0.94rem;
-}
-
 .site-nav {
   display: inline-flex;
   align-items: center;
@@ -330,7 +307,7 @@ p {
   display: grid;
   gap: 8px;
   max-width: 760px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .section-heading h2 {
@@ -338,15 +315,12 @@ p {
 }
 
 .onair-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 14px;
-  align-items: start;
+  display: block;
 }
 
 .onair-main {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(260px, 0.55fr);
+  grid-template-columns: 1fr;
   gap: 14px;
   align-items: start;
 }
@@ -484,37 +458,6 @@ p {
 .station-dock__meta #dockGenre {
   color: #b4bfd2;
   font-size: 0.76rem;
-}
-
-.chat-panel {
-  display: grid;
-  gap: 10px;
-  padding: 18px;
-  min-height: 100%;
-  grid-template-rows: auto auto 1fr auto;
-}
-
-.chat-panel__heading {
-  display: grid;
-  gap: 6px;
-}
-
-.chat-panel__heading h3 {
-  margin: 0;
-  font-size: 1.35rem;
-  letter-spacing: -0.03em;
-}
-
-.chat-panel__frame {
-  width: 100%;
-  min-height: 520px;
-  border: 0;
-  border-radius: 18px;
-  background: #0a1018;
-}
-
-.chat-panel__link {
-  justify-self: flex-start;
 }
 
 .simple-link,
@@ -761,10 +704,6 @@ p {
   .rotation-grid {
     grid-template-columns: 1fr;
   }
-
-  .chat-panel__frame {
-    min-height: 420px;
-  }
 }
 
 @media (max-width: 720px) {
@@ -801,16 +740,6 @@ p {
 
   .brand__text span {
     display: none;
-  }
-
-  .header-listeners {
-    padding: 6px 10px;
-    gap: 5px;
-    align-self: center;
-  }
-
-  .header-listeners__label {
-    font-size: 0.64rem;
   }
 
   .site-nav {
@@ -876,10 +805,6 @@ p {
 
   .now-card__actions .button {
     width: 100%;
-  }
-
-  .chat-panel__frame {
-    min-height: 320px;
   }
 
   .station-dock {
