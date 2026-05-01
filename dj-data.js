@@ -20,7 +20,7 @@ window.DJMIXHUB_EMBED_DJS = [
     tag: 'Now recruiting',
     image: 'assets/logo.jpg',
     bio: 'Guest mixes and new DJs are part of the plan. Square artwork plus one data entry is all it takes to add a new profile.',
-    linkLabel: 'Contact the station',
-    emailSubject: 'DJMixHub DJ Submission'
+    linkLabel: 'Submit a mix',
+    linkUrl: 'https://submit.djmixhub.com'
   }
 ];
