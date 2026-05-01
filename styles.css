@@ -331,6 +331,12 @@ p {
   gap: 16px;
 }
 
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) repeat(2, minmax(220px, 1fr));
+  gap: 16px;
+}
+
 .now-card,
 .info-card,
 .dj-card,
@@ -511,6 +517,32 @@ p {
   display: grid;
   gap: 8px;
   margin-top: 12px;
+}
+
+.contact-card {
+  display: grid;
+  gap: 10px;
+  padding: 20px;
+  align-content: start;
+}
+
+.contact-card h3 {
+  margin: 0;
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.contact-card .button {
+  justify-self: flex-start;
+  margin-top: 4px;
+}
+
+.contact-card--feature {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 18%),
+    linear-gradient(135deg, rgba(108, 124, 255, 0.16), rgba(255, 77, 160, 0.08)),
+    linear-gradient(180deg, var(--surface-strong), var(--surface));
 }
 
 .site-footer {
@@ -703,6 +735,7 @@ p {
   .onair-layout,
   .onair-main,
   .info-grid,
+  .contact-grid,
   .dj-grid {
     grid-template-columns: 1fr;
   }
