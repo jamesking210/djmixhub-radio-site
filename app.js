@@ -10,10 +10,12 @@ const DEFAULT_CONFIG = {
   nowPlayingSseUrl: 'https://radio.djmixhub.com/api/live/nowplaying/sse',
   streamUrl: '',
   hlsUrl: '',
+  submitMixUrl: 'https://submit.djmixhub.com',
   mainRepoUrl: 'https://github.com/jamesking210/djmixhub-radio-site',
   azuracastRepoUrl: 'https://github.com/AzuraCast/AzuraCast',
   githubUrl: 'https://github.com/jamesking210',
   contactEmail: 'djmixhubradio@gmail.com',
+  contactPhone: '833-666-7977',
   termsKey: 'djmixhub_hls_terms_accepted_v1',
   fallbackArtwork: 'assets/logo.jpg',
   pollIntervalMs: 12000,
@@ -58,10 +60,12 @@ function buildConfig() {
     nowPlayingSseUrl: buildUrl(radioBaseUrl, '/api/live/nowplaying/sse'),
     streamUrl: normalizeString(runtimeConfig.streamUrl) || buildUrl(radioBaseUrl, `/listen/${stationShortcode}/radio.mp3`),
     hlsUrl: normalizeString(runtimeConfig.hlsUrl),
+    submitMixUrl: normalizeString(runtimeConfig.submitMixUrl, DEFAULT_CONFIG.submitMixUrl),
     mainRepoUrl: normalizeString(runtimeConfig.mainRepoUrl, DEFAULT_CONFIG.mainRepoUrl),
     azuracastRepoUrl: normalizeString(runtimeConfig.azuracastRepoUrl, DEFAULT_CONFIG.azuracastRepoUrl),
     githubUrl: normalizeString(runtimeConfig.githubUrl, DEFAULT_CONFIG.githubUrl),
-    contactEmail: normalizeString(runtimeConfig.contactEmail, DEFAULT_CONFIG.contactEmail)
+    contactEmail: normalizeString(runtimeConfig.contactEmail, DEFAULT_CONFIG.contactEmail),
+    contactPhone: normalizeString(runtimeConfig.contactPhone, DEFAULT_CONFIG.contactPhone)
   };
 }
 
@@ -115,9 +119,11 @@ const elements = {
   stationName: document.querySelectorAll('[data-config-text="siteName"]'),
   stationTagline: document.querySelectorAll('[data-config-text="siteTagline"]'),
   email: document.querySelectorAll('[data-config-email]'),
+  phone: document.querySelectorAll('[data-config-phone]'),
   mainRepoLinks: document.querySelectorAll('[data-config-href="mainRepoUrl"]'),
   azuracastRepoLinks: document.querySelectorAll('[data-config-href="azuracastRepoUrl"]'),
   githubLinks: document.querySelectorAll('[data-config-href="githubUrl"]'),
+  submitMixLinks: document.querySelectorAll('[data-config-href="submitMixUrl"]'),
   radioBaseLinks: document.querySelectorAll('[data-config-href="radioBaseUrl"]'),
   djGrid: document.getElementById('djGrid')
 };
@@ -186,6 +192,11 @@ function normalizePossibleUrl(value) {
   return value;
 }
 
+function buildTelephoneHref(phoneNumber) {
+  const cleaned = normalizeString(phoneNumber).replace(/[^+\d]/g, '');
+  return cleaned ? `tel:${cleaned}` : '';
+}
+
 function applyConfig() {
   document.title = `${CONFIG.siteName} | Community-Sourced Mix Radio`;
 
@@ -202,7 +213,17 @@ function applyConfig() {
     node.href = `mailto:${CONFIG.contactEmail}`;
   });
 
+  elements.phone.forEach((node) => {
+    if (!CONFIG.contactPhone) {
+      return;
+    }
+
+    node.textContent = CONFIG.contactPhone;
+    node.href = buildTelephoneHref(CONFIG.contactPhone);
+  });
+
   [
+    [elements.submitMixLinks, CONFIG.submitMixUrl],
     [elements.mainRepoLinks, CONFIG.mainRepoUrl],
     [elements.azuracastRepoLinks, CONFIG.azuracastRepoUrl],
     [elements.githubLinks, CONFIG.githubUrl],

@@ -8,8 +8,10 @@ window.DJMIXHUB_EMBED_CONFIG = Object.freeze({
   nowPlayingUrl: "${PUBLIC_NOW_PLAYING_URL}",
   streamUrl: "${PUBLIC_STREAM_URL}",
   hlsUrl: "${PUBLIC_HLS_URL}",
+  submitMixUrl: "${PUBLIC_SUBMIT_MIX_URL}",
   mainRepoUrl: "${PUBLIC_MAIN_REPO_URL}",
   azuracastRepoUrl: "${PUBLIC_AZURACAST_REPO_URL}",
   githubUrl: "${PUBLIC_GITHUB_URL}",
-  contactEmail: "${PUBLIC_CONTACT_EMAIL}"
+  contactEmail: "${PUBLIC_CONTACT_EMAIL}",
+  contactPhone: "${PUBLIC_CONTACT_PHONE}"
 });

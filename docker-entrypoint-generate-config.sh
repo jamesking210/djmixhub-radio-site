@@ -10,10 +10,12 @@ set -eu
 : "${PUBLIC_NOW_PLAYING_URL:=https://radio.djmixhub.com/api/nowplaying/djmixhub}"
 : "${PUBLIC_STREAM_URL:=}"
 : "${PUBLIC_HLS_URL:=}"
+: "${PUBLIC_SUBMIT_MIX_URL:=https://submit.djmixhub.com}"
 : "${PUBLIC_MAIN_REPO_URL:=https://github.com/jamesking210/djmixhub-radio-site}"
 : "${PUBLIC_AZURACAST_REPO_URL:=https://github.com/AzuraCast/AzuraCast}"
 : "${PUBLIC_GITHUB_URL:=https://github.com/jamesking210}"
 : "${PUBLIC_CONTACT_EMAIL:=djmixhubradio@gmail.com}"
+: "${PUBLIC_CONTACT_PHONE:=833-666-7977}"
 
 envsubst '
 ${PUBLIC_SITE_URL}
@@ -25,8 +27,10 @@ ${PUBLIC_STATION_NAME}
 ${PUBLIC_NOW_PLAYING_URL}
 ${PUBLIC_STREAM_URL}
 ${PUBLIC_HLS_URL}
+${PUBLIC_SUBMIT_MIX_URL}
 ${PUBLIC_MAIN_REPO_URL}
 ${PUBLIC_AZURACAST_REPO_URL}
 ${PUBLIC_GITHUB_URL}
 ${PUBLIC_CONTACT_EMAIL}
+${PUBLIC_CONTACT_PHONE}
 ' < /usr/share/nginx/html/config.template.js > /usr/share/nginx/html/config.js

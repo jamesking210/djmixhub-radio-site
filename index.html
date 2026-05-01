@@ -15,7 +15,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/jpeg" href="assets/logo.jpg" />
-    <link rel="stylesheet" href="styles.css?v=20260429a" />
+    <link rel="stylesheet" href="styles.css?v=20260501a" />
   </head>
   <body>
     <div class="terms-gate" id="termsGate" aria-hidden="true">
@@ -51,6 +51,7 @@
         <nav class="site-nav" aria-label="Main navigation">
           <a href="#onair">On Air</a>
           <a href="#djs">DJs</a>
+          <a data-config-href="submitMixUrl" target="_blank" rel="noreferrer">Submit Mix</a>
           <a href="#opensource">Open Source</a>
           <a data-config-email>Contact</a>
         </nav>
@@ -126,7 +127,7 @@
           <div class="section-heading">
             <span class="eyebrow">DJs</span>
             <h2>The people behind the station.</h2>
-            <p>Resident DJs, guest contributors, and space for more mixes as the roster grows.</p>
+            <p>Resident DJs, guest contributors, and space for more mixes as the roster grows. Want to be part of it? Submit a mix anytime.</p>
           </div>
           <div id="djGrid" class="dj-grid" aria-live="polite"></div>
         </div>
@@ -165,8 +166,12 @@
             <article class="card info-card">
               <span class="meta-label">Contact</span>
               <h3>DJMixHub radio</h3>
-              <p>Questions, guest mix ideas, or DJ interest can go straight to the station inbox.</p>
-              <a class="simple-link" data-config-email>djmixhubradio@gmail.com</a>
+              <p>Questions, guest mix ideas, and station calls can go straight to DJMixHub.</p>
+              <div class="info-card__links">
+                <a class="simple-link" data-config-href="submitMixUrl" target="_blank" rel="noreferrer">Submit a DJ mix</a>
+                <a class="simple-link" data-config-phone>833-666-7977</a>
+                <a class="simple-link" data-config-email>djmixhubradio@gmail.com</a>
+              </div>
             </article>
           </div>
         </div>
@@ -178,8 +183,10 @@
         <p><span data-config-text="siteName">DJMixHub</span> • <span data-config-text="siteTagline">Open Source Energy. Community Sourced Mixes.</span></p>
         <div class="site-footer__links">
           <a data-config-href="radioBaseUrl" target="_blank" rel="noreferrer">Station</a>
+          <a data-config-href="submitMixUrl" target="_blank" rel="noreferrer">Submit Mix</a>
           <a data-config-href="githubUrl" target="_blank" rel="noreferrer">GitHub</a>
           <a href="terms.html">Terms</a>
+          <a data-config-phone>833-666-7977</a>
           <a data-config-email>djmixhubradio@gmail.com</a>
         </div>
       </div>
@@ -205,8 +212,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
-    <script src="config.js?v=20260429a"></script>
-    <script src="dj-data.js?v=20260429a"></script>
-    <script src="app.js?v=20260429a"></script>
+    <script src="config.js?v=20260501a"></script>
+    <script src="dj-data.js?v=20260501a"></script>
+    <script src="app.js?v=20260501a"></script>
   </body>
 </html>
